@@ -1,0 +1,8 @@
+bin
+bmpmanipuleitor.*
+imgsTest
+constantes.*
+estructuras.*
+main.c
+obj
+*.pdf
