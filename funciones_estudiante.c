@@ -27,54 +27,6 @@
 #include "constantes.h"
 #include "funciones_estudiante.h"
 
-int solucion(int argc, char* argv[])
-{
-    int i, numOperaciones = 0;
-    char *operaciones[5], *nombreImagen;
-    if(argc < 3)
-    {
-        printf("Uso: %s <argumentos> entre las cuales esta la imagen\n", argv[0]);
-        return 0;
-    }
-    for(i = 1; i < argc; i++)
-    {
-        if(strncmp(argv[i], "--", 2) == 0)
-        {
-            operaciones[numOperaciones] = argv[i];
-            numOperaciones++;
-        }
-        else
-            nombreImagen = argv[i];
-    }
-    for(i = 0; i < numOperaciones; i++)
-    {
-        if(strcmp(operaciones[i], "--escala-de-grises") == 0)
-            escalaDeGrises(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
-            tonalidadRoja(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
-            tonalidadVerde(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
-            tonalidadAzul(nombreImagen);
-        if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
-            aumentarContraste(nombreImagen);
-        if(strcmp(operaciones[i], "--reducir-contraste") == 0)
-            reducirContraste(nombreImagen);
-        if(strcmp(operaciones[i], "--recortar") == 0)
-            recortar(nombreImagen);
-        if(strcmp(operaciones[i], "--dump") == 0)
-        {
-            FILE *archivo = fopen(nombreImagen, "rb");
-            dumpHex(archivo);
-        }
-        if(strcmp(operaciones[i], "--prueba") == 0)
-        {
-            operaciones[0] = argv[0];
-            printf("%s", operaciones[0]);
-        }
-    }
-    return TODO_OK;
-}
 
 void dumpHex(FILE *archivo)
 {
@@ -84,6 +36,18 @@ void dumpHex(FILE *archivo)
         leido = fgetc(archivo);
         printf("byte:%d hexa: %x\n", i, leido);
         i++;
+    }
+}
+
+void copiandoCabecera(FILE *in, FILE *out, unsigned int comienzoImagen)
+{
+    int i;
+    unsigned char byte;
+    //copiando data hasta comienzo de la imagen
+    for(i = 0; i < comienzoImagen; i++)
+    {
+        fread(&byte, sizeof(unsigned char), 1, in);
+        fwrite(&byte, sizeof(unsigned char), 1, out);
     }
 }
 
@@ -103,11 +67,11 @@ void extraerMetadata(FILE *archivo, t_metadata *dataP)
     fseek(archivo, 28, SEEK_SET);
     fread(&dataP->profundida, 2, 1, archivo);
 
-    printf("tamanio de archivo: %d bytes\n", dataP->tamArchivo);
+    /*printf("tamanio de archivo: %d bytes\n", dataP->tamArchivo);
     printf("comienzo de la imagen: %d bytes\n", dataP->comienzoImagen);
     printf("tamanio del encabezado: %d bytes\n", dataP->tamEncabezado);
     printf("ancho x alto: %d x %d pixeles\n", dataP->ancho, dataP->alto);
-    printf("profundidad: %d\n", dataP->profundida);
+    printf("profundidad: %d\n", dataP->profundida);*/
     rewind(archivo);
 }
 int escalaDeGrises(char *nombreImagenIn)
@@ -134,12 +98,7 @@ int escalaDeGrises(char *nombreImagenIn)
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
-    {
-        unsigned char byte;
-        fread(&byte, sizeof(unsigned char), 1, imagenIn);
-        fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
-    }
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
     for (int y = 0; y < metaP.alto; y++)
@@ -185,12 +144,7 @@ int tonalidadAzul(char *nombreImagenIn)
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
-    {
-        unsigned char byte;
-        fread(&byte, sizeof(unsigned char), 1, imagenIn);
-        fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
-    }
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
     for (int y = 0; y < metaP.alto; y++)
@@ -237,12 +191,7 @@ int tonalidadVerde(char *nombreImagenIn)
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
-    {
-        unsigned char byte;
-        fread(&byte, sizeof(unsigned char), 1, imagenIn);
-        fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
-    }
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
     for (int y = 0; y < metaP.alto; y++)
@@ -290,12 +239,7 @@ int tonalidadRoja(char *nombreImagenIn)
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
-    {
-        unsigned char byte;
-        fread(&byte, sizeof(unsigned char), 1, imagenIn);
-        fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
-    }
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
     for (int y = 0; y < metaP.alto; y++)
@@ -342,15 +286,10 @@ int aumentarContraste(char *nombreImagenIn)
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
-    float factorAumento = 1.24;
-    unsigned int nuevoRojo, nuevoVerde, nuevoAzul;
+    float factorAumento;
+    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio;
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
-    {
-        unsigned char byte;
-        fread(&byte, sizeof(unsigned char), 1, imagenIn);
-        fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
-    }
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
     for (int y = 0; y < metaP.alto; y++)
@@ -359,16 +298,27 @@ int aumentarContraste(char *nombreImagenIn)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
-            //calculo
-            nuevoRojo = pixel.red * factorAumento;
-            nuevoVerde = pixel.green * factorAumento;
-            nuevoAzul = pixel.blue * factorAumento;
-            //modifico los valores para la imagen de salida
+            //calcular promedio
+            promedio = (pixel.red + pixel.green + pixel.blue) / 3;
+
+            //Si el promedio es mayor a 127 aumentamos sino reducimos
+            if(promedio > 127)
+            {
+                factorAumento = 1.25;
+                nuevoRojo = pixel.red * factorAumento;
+                nuevoVerde = pixel.green * factorAumento;
+                nuevoAzul = pixel.blue * factorAumento;
+            }
+            else
+            {
+                factorAumento = 0.85;
+                nuevoRojo = pixel.red * factorAumento;
+                nuevoVerde = pixel.green * factorAumento;
+                nuevoAzul = pixel.blue * factorAumento;
+            }
             pixel.red = (nuevoRojo > 255) ? 255 : nuevoRojo;
             pixel.green = (nuevoVerde > 255) ? 255 : nuevoVerde;
             pixel.blue = (nuevoAzul > 255) ? 255 : nuevoAzul;
-            //printf("red: %d | green: %d | blue: %d | nuevoR: %d | nuevoG: %d | nuevoB: %d\n",
-            //       pixel.red, pixel.green, pixel.blue, nuevoRojo, nuevoVerde, nuevoAzul);
             //escribo los bytes en la imagen de salida
             fwrite(&pixel, sizeof(pixel), 1, imagenOut);
         }
@@ -402,16 +352,12 @@ int reducirContraste(char *nombreImagenIn)
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
-    float factorReductor = 0.85;
-    unsigned int nuevoRojo, nuevoVerde, nuevoAzul;
+    float factorAumento;
+    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio;
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
-    {
-        unsigned char byte;
-        fread(&byte, sizeof(unsigned char), 1, imagenIn);
-        fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
-    }
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
+    //printf("pointer: %d\n", ftell(imagenOut));
 
     for (int y = 0; y < metaP.alto; y++)
     {
@@ -419,21 +365,28 @@ int reducirContraste(char *nombreImagenIn)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
-            //calculo
+            //calcular promedio
+            promedio = (pixel.red + pixel.green + pixel.blue) / 3;
 
-            nuevoRojo = pixel.red * factorReductor;
-            nuevoVerde = pixel.green * factorReductor;
-            nuevoAzul = pixel.blue * factorReductor;
-
-            //modifico los valores para la imagen de salida
-
-            pixel.red = nuevoRojo;
-            pixel.green = nuevoVerde;
-            pixel.blue = nuevoAzul;
-
-            //printf("red: %d | green: %d | blue: %d | nuevoR: %d | nuevoG: %d | nuevoB: %d\n",
-            //       pixel.red, pixel.green, pixel.blue, nuevoRojo, nuevoVerde, nuevoAzul);
-            //escribo los bytes en la imagen de salida
+            //Si el promedio es mayor a 127 reducimos sino aumentamos
+            if(promedio > 127)
+            {
+                factorAumento = 0.85;
+                nuevoRojo = pixel.red * factorAumento;
+                nuevoVerde = pixel.green * factorAumento;
+                nuevoAzul = pixel.blue * factorAumento;
+            }
+            else
+            {
+                factorAumento = 1.25;
+                nuevoRojo = pixel.red * factorAumento;
+                nuevoVerde = pixel.green * factorAumento;
+                nuevoAzul = pixel.blue * factorAumento;
+            }
+            pixel.red = (nuevoRojo > 255) ? 255 : nuevoRojo;
+            pixel.green = (nuevoVerde > 255) ? 255 : nuevoVerde;
+            pixel.blue = (nuevoAzul > 255) ? 255 : nuevoAzul;
+            //escribir en imagenOut
             fwrite(&pixel, sizeof(pixel), 1, imagenOut);
         }
     }
@@ -474,9 +427,7 @@ int recortar(char *nombreImagenIn)
         {
             unsigned int tam;
             fread(&tam, 4, 1, imagenIn);
-            printf("tamOriginal: %d\n", tam);
             tam = tam >> 2;
-            printf("tamMod: %d\n", tam);
             fwrite(&tam, 4, 1, imagenOut);
             i += 4;
         }
@@ -511,7 +462,59 @@ int recortar(char *nombreImagenIn)
             //escribo los bytes en la imagen de salida
             fwrite(&pixel, sizeof(pixel), 1, imagenOut);
         }
+        printf("pointer antes: %ld\n", ftell(imagenIn));
+        fseek(imagenIn, mitadAncho, SEEK_CUR);
+        printf("pointer despues: %ld\n", ftell(imagenIn));
     }
     return 1;
 }
 
+int solucion(int argc, char* argv[])
+{
+    int i, numOperaciones = 0;
+    char *operaciones[5], *nombreImagen;
+    if(argc < 3)
+    {
+        printf("Uso: %s <argumentos> entre las cuales esta la imagen\n", argv[0]);
+        return 0;
+    }
+    for(i = 1; i < argc; i++)
+    {
+        if(strncmp(argv[i], "--", 2) == 0)
+        {
+            operaciones[numOperaciones] = argv[i];
+            numOperaciones++;
+        }
+        else
+            nombreImagen = argv[i];
+    }
+    for(i = 0; i < numOperaciones; i++)
+    {
+        if(strcmp(operaciones[i], "--escala-de-grises") == 0)
+            escalaDeGrises(nombreImagen);
+        if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
+            tonalidadRoja(nombreImagen);
+        if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
+            tonalidadVerde(nombreImagen);
+        if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
+            tonalidadAzul(nombreImagen);
+        if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
+            aumentarContraste(nombreImagen);
+        if(strcmp(operaciones[i], "--reducir-contraste") == 0)
+            reducirContraste(nombreImagen);
+        if(strcmp(operaciones[i], "--recortar") == 0)
+            recortar(nombreImagen);
+        if(strcmp(operaciones[i], "--dump") == 0)
+        {
+            FILE *archivo = fopen(nombreImagen, "rb");
+            dumpHex(archivo);
+        }
+        if(strcmp(operaciones[i], "--prueba") == 0)
+        {
+            t_metadata metaD;
+            FILE *archivo = fopen("estudiante_recortar.bmp", "rb");
+            extraerMetadata(archivo, &metaD);
+        }
+    }
+    return TODO_OK;
+}
