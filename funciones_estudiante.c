@@ -67,11 +67,11 @@ void extraerMetadata(FILE *archivo, t_metadata *dataP)
     fseek(archivo, 28, SEEK_SET);
     fread(&dataP->profundida, 2, 1, archivo);
 
-    /*printf("tamanio de archivo: %d bytes\n", dataP->tamArchivo);
+    printf("tamanio de archivo: %d bytes\n", dataP->tamArchivo);
     printf("comienzo de la imagen: %d bytes\n", dataP->comienzoImagen);
     printf("tamanio del encabezado: %d bytes\n", dataP->tamEncabezado);
     printf("ancho x alto: %d x %d pixeles\n", dataP->ancho, dataP->alto);
-    printf("profundidad: %d\n", dataP->profundida);*/
+    printf("profundidad: %d\n", dataP->profundida);
     rewind(archivo);
 }
 int escalaDeGrises(char *nombreImagenIn)
@@ -408,12 +408,12 @@ int recortar(char *nombreImagenIn)
     if (imagenIn == NULL)
     {
         printf("No se pudo abrir imagenIn\n");
-        return 1;
+        return ARCHIVO_NO_ENCONTRADO;
     }
     if (imagenOut == NULL)
     {
         printf("No se pudo abrir imagenOut\n");
-        return 1;
+        return NO_SE_PUEDE_CREAR_ARCHIVO;
     }
     //lee y guardar datos
     t_metadata metaP;
@@ -469,6 +469,113 @@ int recortar(char *nombreImagenIn)
     return 1;
 }
 
+int rotarIzquierda(char *nombreImagenIn)
+{
+    t_pixel pixel;
+    FILE *imagenIn;
+    FILE *imagenOut;
+    // Abre el archivo
+    imagenIn = fopen(nombreImagenIn, "rb");
+    imagenOut = fopen("estudiante_rotar-izquierda.bmp", "wb");
+    // Verifica si se abrio
+    if (imagenIn == NULL)
+    {
+        printf("No se pudo abrir imagenIn\n");
+        return 1;
+    }
+    if (imagenOut == NULL)
+    {
+        printf("No se pudo abrir imagenOut\n");
+        return 1;
+    }
+
+    //lee y guardar datos
+    t_metadata metaP;
+    extraerMetadata(imagenIn, &metaP);
+    //copiando data hasta comienzo de la imagen
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    //printf("posAntes: %ld\n", ftell(imagenOut));
+    // Modificando cagecera para rotar: ancho y alto
+    fseek(imagenOut, 18, SEEK_SET);
+    fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
+    fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
+    fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
+    //printf("posDespues: %ld\n", ftell(imagenOut));
+
+    t_pixel imagenOriginal[metaP.alto][metaP.ancho];
+    //Copiamos la imagen en la matrizOriginal
+    for(int fila = 0; fila < metaP.alto; fila++)
+    {
+        for(int col = 0; col < metaP.ancho; col++)
+        {
+            fread(&pixel, sizeof(t_pixel), 1, imagenIn);
+            imagenOriginal[fila][col] = pixel;
+        }
+    }
+    for(int fila = 0; fila < metaP.ancho; fila++)
+    {
+        for(int col = 0; col < metaP.alto; col++)
+            fwrite(&imagenOriginal[metaP.alto - 1 - col][fila], sizeof(t_pixel), 1, imagenOut);
+    }
+
+
+
+    fclose(imagenIn);
+    fclose(imagenOut);
+    return 1;
+}
+int rotarDerecha(char *nombreImagenIn)
+{
+    t_pixel pixel;
+    FILE *imagenIn;
+    FILE *imagenOut;
+    // Abre el archivo
+    imagenIn = fopen(nombreImagenIn, "rb");
+    imagenOut = fopen("estudiante_rotar-derecha.bmp", "wb");
+    // Verifica si se abrio
+    if (imagenIn == NULL)
+    {
+        printf("No se pudo abrir imagenIn\n");
+        return 1;
+    }
+    if (imagenOut == NULL)
+    {
+        printf("No se pudo abrir imagenOut\n");
+        return 1;
+    }
+
+    //lee y guardar datos
+    t_metadata metaP;
+    extraerMetadata(imagenIn, &metaP);
+    //copiando data hasta comienzo de la imagen
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    // Modificando cagecera para rotar: ancho y alto
+    fseek(imagenOut, 18, SEEK_SET);
+    fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
+    fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
+    fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
+
+    t_pixel imagenOriginal[metaP.alto][metaP.ancho];
+    //Copiamos la imagen en la matrizOriginal
+    for(int fila = 0; fila < metaP.alto; fila++)
+    {
+        for(int col = 0; col < metaP.ancho; col++)
+        {
+            fread(&pixel, sizeof(t_pixel), 1, imagenIn);
+            imagenOriginal[fila][col] = pixel;
+        }
+    }
+    // rotando imagen
+    for(int fila = 0; fila < metaP.ancho; fila++)
+    {
+        for(int col = 0; col < metaP.alto; col++)
+            fwrite(&imagenOriginal[col][metaP.ancho - 1 - fila], sizeof(t_pixel), 1, imagenOut);
+    }
+    fclose(imagenIn);
+    fclose(imagenOut);
+    return 1;
+}
+
 int solucion(int argc, char* argv[])
 {
     int i, numOperaciones = 0;
@@ -504,6 +611,10 @@ int solucion(int argc, char* argv[])
             reducirContraste(nombreImagen);
         if(strcmp(operaciones[i], "--recortar") == 0)
             recortar(nombreImagen);
+        if(strcmp(operaciones[i], "--rotar-izquierda") == 0)
+            rotarIzquierda(nombreImagen);
+        if(strcmp(operaciones[i], "--rotar-derecha") == 0)
+            rotarDerecha(nombreImagen);
         if(strcmp(operaciones[i], "--dump") == 0)
         {
             FILE *archivo = fopen(nombreImagen, "rb");
@@ -511,9 +622,10 @@ int solucion(int argc, char* argv[])
         }
         if(strcmp(operaciones[i], "--prueba") == 0)
         {
-            t_metadata metaD;
-            FILE *archivo = fopen("estudiante_recortar.bmp", "rb");
-            extraerMetadata(archivo, &metaD);
+            t_metadata data;
+            FILE *imagen = fopen(nombreImagen, "rb");
+            extraerMetadata(imagen, &data);
+
         }
     }
     return TODO_OK;
