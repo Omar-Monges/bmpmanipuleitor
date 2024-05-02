@@ -66,12 +66,6 @@ void extraerMetadata(FILE *archivo, t_metadata *dataP)
 
     fseek(archivo, 28, SEEK_SET);
     fread(&dataP->profundida, 2, 1, archivo);
-
-    printf("tamanio de archivo: %d bytes\n", dataP->tamArchivo);
-    printf("comienzo de la imagen: %d bytes\n", dataP->comienzoImagen);
-    printf("tamanio del encabezado: %d bytes\n", dataP->tamEncabezado);
-    printf("ancho x alto: %d x %d pixeles\n", dataP->ancho, dataP->alto);
-    printf("profundidad: %d\n", dataP->profundida);
     rewind(archivo);
 }
 int escalaDeGrises(char *nombreImagenIn)
@@ -463,7 +457,7 @@ int recortar(char *nombreImagenIn)
             imagenOriginal[fila][col] = pixel;
         }
     }
-
+    //Recortando
     for (y = 0; y < mitadAlto ; y++)
     {
         for(x = 0; x < mitadAncho; x++)
@@ -501,6 +495,7 @@ int rotarIzquierda(char *nombreImagenIn)
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando cagecera para rotar: ancho y alto
     fseek(imagenOut, 18, SEEK_SET);
+    //fwrite(que voy a escribir, tamanio de byte,
     fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
     fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
     fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
@@ -626,36 +621,37 @@ int solucion(int argc, char* argv[])
     {
         if(strcmp(operaciones[i], "--escala-de-grises") == 0)
             escalaDeGrises(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
+        else if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
             tonalidadRoja(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
+        else if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
             tonalidadVerde(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
+        else if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
             tonalidadAzul(nombreImagen);
-        if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
+        else if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
             aumentarContraste(nombreImagen);
-        if(strcmp(operaciones[i], "--reducir-contraste") == 0)
+        else if(strcmp(operaciones[i], "--reducir-contraste") == 0)
             reducirContraste(nombreImagen);
-        if(strcmp(operaciones[i], "--recortar") == 0)
+        else if(strcmp(operaciones[i], "--recortar") == 0)
             recortar(nombreImagen);
-        if(strcmp(operaciones[i], "--rotar-izquierda") == 0)
+        else if(strcmp(operaciones[i], "--rotar-izquierda") == 0)
             rotarIzquierda(nombreImagen);
-        if(strcmp(operaciones[i], "--rotar-derecha") == 0)
+        else if(strcmp(operaciones[i], "--rotar-derecha") == 0)
             rotarDerecha(nombreImagen);
-        if(strcmp(operaciones[i], "--metadata") == 0)
+        else if(strcmp(operaciones[i], "--metadata") == 0)
             mostrarMetadata(nombreImagen);
-        if(strcmp(operaciones[i], "--dump") == 0)
+        else if(strcmp(operaciones[i], "--dump") == 0)
         {
             FILE *archivo = fopen(nombreImagen, "rb");
             dumpHex(archivo);
         }
-        if(strcmp(operaciones[i], "--prueba") == 0)
+        else if(strcmp(operaciones[i], "--prueba") == 0)
         {
             t_metadata data;
             FILE *imagen = fopen(nombreImagen, "rb");
             extraerMetadata(imagen, &data);
-
         }
+        else
+            printf("operacion %s desconoscido\n", operaciones[i]);
     }
     return TODO_OK;
 }
