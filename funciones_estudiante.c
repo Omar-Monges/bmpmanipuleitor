@@ -470,9 +470,6 @@ int recortar(char *nombreImagenIn)
         {
             fwrite(&imagenOriginal[y][x], sizeof(t_pixel), 1, imagenOut);
         }
-        //printf("pointer antes: %ld\n", ftell(imagenIn));
-        //fseek(imagenIn, mitadAncho, SEEK_CUR);
-        //printf("pointer despues: %ld\n", ftell(imagenIn));
     }
     return 1;
 }
@@ -524,9 +521,6 @@ int rotarIzquierda(char *nombreImagenIn)
         for(int col = 0; col < metaP.alto; col++)
             fwrite(&imagenOriginal[metaP.alto - 1 - col][fila], sizeof(t_pixel), 1, imagenOut);
     }
-
-
-
     fclose(imagenIn);
     fclose(imagenOut);
     return 1;
@@ -582,6 +576,32 @@ int rotarDerecha(char *nombreImagenIn)
     fclose(imagenOut);
     return 1;
 }
+void mostrarMetadata(char *nombreImagen)
+{
+    FILE *archivo = fopen(nombreImagen, "rb");
+    t_metadata meta;
+    fseek(archivo, 2, SEEK_SET);
+    fread(&meta.tamArchivo, 4, 1, archivo);
+
+    fseek(archivo, 10, SEEK_SET);
+    fread(&meta.comienzoImagen, 4, 1, archivo);
+    fread(&meta.tamEncabezado, 4, 1, archivo);
+
+    fseek(archivo, 18, SEEK_SET);
+    fread(&meta.ancho, 4, 1, archivo);
+    fread(&meta.alto, 4, 1, archivo);
+
+    fseek(archivo, 28, SEEK_SET);
+    fread(&meta.profundida, 2, 1, archivo);
+
+    printf("tamanio de archivo: %d bytes\n", meta.tamArchivo);
+    printf("comienzo de la imagen: %d bytes\n", meta.comienzoImagen);
+    printf("tamanio del encabezado: %d bytes\n", meta.tamEncabezado);
+    printf("ancho x alto: %d x %d pixeles\n", meta.ancho, meta.alto);
+    printf("profundidad: %d\n", meta.profundida);
+
+    fclose(archivo);
+}
 
 int solucion(int argc, char* argv[])
 {
@@ -622,6 +642,8 @@ int solucion(int argc, char* argv[])
             rotarIzquierda(nombreImagen);
         if(strcmp(operaciones[i], "--rotar-derecha") == 0)
             rotarDerecha(nombreImagen);
+        if(strcmp(operaciones[i], "--metadata") == 0)
+            mostrarMetadata(nombreImagen);
         if(strcmp(operaciones[i], "--dump") == 0)
         {
             FILE *archivo = fopen(nombreImagen, "rb");
