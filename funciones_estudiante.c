@@ -453,18 +453,26 @@ int recortar(char *nombreImagenIn)
     }
     mitadAlto = metaP.alto >> 1;
     mitadAncho = metaP.ancho >> 1;
+    t_pixel imagenOriginal[metaP.alto][metaP.ancho];
+    //Copiamos la imagen en la matrizOriginal
+    for(int fila = 0; fila < metaP.alto; fila++)
+    {
+        for(int col = 0; col < metaP.ancho; col++)
+        {
+            fread(&pixel, sizeof(t_pixel), 1, imagenIn);
+            imagenOriginal[fila][col] = pixel;
+        }
+    }
+
     for (y = 0; y < mitadAlto ; y++)
     {
         for(x = 0; x < mitadAncho; x++)
         {
-            //leer el pixel de la imagen de entrada
-            fread(&pixel, sizeof(pixel), 1, imagenIn);
-            //escribo los bytes en la imagen de salida
-            fwrite(&pixel, sizeof(pixel), 1, imagenOut);
+            fwrite(&imagenOriginal[y][x], sizeof(t_pixel), 1, imagenOut);
         }
-        printf("pointer antes: %ld\n", ftell(imagenIn));
-        fseek(imagenIn, mitadAncho, SEEK_CUR);
-        printf("pointer despues: %ld\n", ftell(imagenIn));
+        //printf("pointer antes: %ld\n", ftell(imagenIn));
+        //fseek(imagenIn, mitadAncho, SEEK_CUR);
+        //printf("pointer despues: %ld\n", ftell(imagenIn));
     }
     return 1;
 }
@@ -494,7 +502,6 @@ int rotarIzquierda(char *nombreImagenIn)
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
-    //printf("posAntes: %ld\n", ftell(imagenOut));
     // Modificando cagecera para rotar: ancho y alto
     fseek(imagenOut, 18, SEEK_SET);
     fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
