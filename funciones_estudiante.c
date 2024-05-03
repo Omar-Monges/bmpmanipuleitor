@@ -66,33 +66,15 @@ void extraerMetadata(FILE *archivo, t_metadata *dataP)
 
     fseek(archivo, 28, SEEK_SET);
     fread(&dataP->profundida, 2, 1, archivo);
-
-    printf("tamanio de archivo: %d bytes\n", dataP->tamArchivo);
-    printf("comienzo de la imagen: %d bytes\n", dataP->comienzoImagen);
-    printf("tamanio del encabezado: %d bytes\n", dataP->tamEncabezado);
-    printf("ancho x alto: %d x %d pixeles\n", dataP->ancho, dataP->alto);
-    printf("profundidad: %d\n", dataP->profundida);
     rewind(archivo);
 }
 int escalaDeGrises(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_escala-de-grises.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_escala-de-grises.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
 
     //lee y guardar datos
     t_metadata metaP;
@@ -119,27 +101,15 @@ int escalaDeGrises(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
+    return TODO_OK;
 }
 int tonalidadAzul(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_tonalidad-azul.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_tonalidad-azul.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -164,29 +134,16 @@ int tonalidadAzul(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
-
+    return TODO_OK;
 }
 
 int tonalidadVerde(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_tonalidad-verde.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_tonalidad-verde.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -211,30 +168,17 @@ int tonalidadVerde(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
-
+    return TODO_OK;
 }
 
 
 int tonalidadRoja(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_tonalidad-roja.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_tonalidad-roja.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -259,30 +203,17 @@ int tonalidadRoja(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
+    return TODO_OK;
 }
 
 
 int aumentarContraste(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_aumentar-contraste.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_aumentar-contraste.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
-
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -325,30 +256,17 @@ int aumentarContraste(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
+    return TODO_OK;
 }
 
 
 int reducirContraste(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_reducir-contraste.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_reducir-contraste.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
-
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -392,29 +310,17 @@ int reducirContraste(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
+    return TODO_OK;
 }
 
 int recortar(char *nombreImagenIn)
 {
     int mitadAlto, mitadAncho, x, y;
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_recortar.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_recortar.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return ARCHIVO_NO_ENCONTRADO;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return NO_SE_PUEDE_CREAR_ARCHIVO;
-    }
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -463,40 +369,24 @@ int recortar(char *nombreImagenIn)
             imagenOriginal[fila][col] = pixel;
         }
     }
-
+    //Recortando
     for (y = 0; y < mitadAlto ; y++)
     {
         for(x = 0; x < mitadAncho; x++)
         {
             fwrite(&imagenOriginal[y][x], sizeof(t_pixel), 1, imagenOut);
         }
-        //printf("pointer antes: %ld\n", ftell(imagenIn));
-        //fseek(imagenIn, mitadAncho, SEEK_CUR);
-        //printf("pointer despues: %ld\n", ftell(imagenIn));
     }
-    return 1;
+    return TODO_OK;
 }
 
 int rotarIzquierda(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_rotar-izquierda.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_rotar-izquierda.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
-
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -504,6 +394,7 @@ int rotarIzquierda(char *nombreImagenIn)
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando cagecera para rotar: ancho y alto
     fseek(imagenOut, 18, SEEK_SET);
+    //fwrite(que voy a escribir, tamanio de byte,
     fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
     fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
     fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
@@ -524,33 +415,17 @@ int rotarIzquierda(char *nombreImagenIn)
         for(int col = 0; col < metaP.alto; col++)
             fwrite(&imagenOriginal[metaP.alto - 1 - col][fila], sizeof(t_pixel), 1, imagenOut);
     }
-
-
-
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
+    return TODO_OK;
 }
 int rotarDerecha(char *nombreImagenIn)
 {
     t_pixel pixel;
-    FILE *imagenIn;
-    FILE *imagenOut;
-    // Abre el archivo
-    imagenIn = fopen(nombreImagenIn, "rb");
-    imagenOut = fopen("estudiante_rotar-derecha.bmp", "wb");
+    PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_rotar-derecha.bmp");
     // Verifica si se abrio
-    if (imagenIn == NULL)
-    {
-        printf("No se pudo abrir imagenIn\n");
-        return 1;
-    }
-    if (imagenOut == NULL)
-    {
-        printf("No se pudo abrir imagenOut\n");
-        return 1;
-    }
-
+    if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
@@ -580,7 +455,52 @@ int rotarDerecha(char *nombreImagenIn)
     }
     fclose(imagenIn);
     fclose(imagenOut);
-    return 1;
+    return TODO_OK;
+}
+void mostrarMetadata(char *nombreImagen)
+{
+    FILE *archivo = fopen(nombreImagen, "rb");
+    t_metadata meta;
+    fseek(archivo, 2, SEEK_SET);
+    fread(&meta.tamArchivo, 4, 1, archivo);
+
+    fseek(archivo, 10, SEEK_SET);
+    fread(&meta.comienzoImagen, 4, 1, archivo);
+    fread(&meta.tamEncabezado, 4, 1, archivo);
+
+    fseek(archivo, 18, SEEK_SET);
+    fread(&meta.ancho, 4, 1, archivo);
+    fread(&meta.alto, 4, 1, archivo);
+
+    fseek(archivo, 28, SEEK_SET);
+    fread(&meta.profundida, 2, 1, archivo);
+
+    printf("tamanio de archivo: %d bytes\n", meta.tamArchivo);
+    printf("comienzo de la imagen: %d bytes\n", meta.comienzoImagen);
+    printf("tamanio del encabezado: %d bytes\n", meta.tamEncabezado);
+    printf("ancho x alto: %d x %d pixeles\n", meta.ancho, meta.alto);
+    printf("profundidad: %d\n", meta.profundida);
+
+    fclose(archivo);
+}
+
+void resultado(const int res)
+{
+    switch (res)
+    {
+    case 0:
+        printf("todo okey\n");
+        break;
+    case 10:
+        printf("Archivo no encontrado\n");
+        break;
+    case 20:
+        printf("No se puede crear archivo\n");
+        break;
+    default:
+        printf("no se que codigo de error es XD\n");
+    }
+
 }
 
 int solucion(int argc, char* argv[])
@@ -605,35 +525,38 @@ int solucion(int argc, char* argv[])
     for(i = 0; i < numOperaciones; i++)
     {
         if(strcmp(operaciones[i], "--escala-de-grises") == 0)
-            escalaDeGrises(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
-            tonalidadRoja(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
-            tonalidadVerde(nombreImagen);
-        if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
-            tonalidadAzul(nombreImagen);
-        if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
-            aumentarContraste(nombreImagen);
-        if(strcmp(operaciones[i], "--reducir-contraste") == 0)
-            reducirContraste(nombreImagen);
-        if(strcmp(operaciones[i], "--recortar") == 0)
-            recortar(nombreImagen);
-        if(strcmp(operaciones[i], "--rotar-izquierda") == 0)
-            rotarIzquierda(nombreImagen);
-        if(strcmp(operaciones[i], "--rotar-derecha") == 0)
-            rotarDerecha(nombreImagen);
-        if(strcmp(operaciones[i], "--dump") == 0)
+            resultado(escalaDeGrises(nombreImagen));
+        else if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
+            resultado(tonalidadRoja(nombreImagen));
+        else if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
+            resultado(tonalidadVerde(nombreImagen));
+        else if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
+            resultado(tonalidadAzul(nombreImagen));
+        else if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
+            resultado(aumentarContraste(nombreImagen));
+        else if(strcmp(operaciones[i], "--reducir-contraste") == 0)
+            resultado(reducirContraste(nombreImagen));
+        else if(strcmp(operaciones[i], "--recortar") == 0)
+            resultado(recortar(nombreImagen));
+        else if(strcmp(operaciones[i], "--rotar-izquierda") == 0)
+            resultado(rotarIzquierda(nombreImagen));
+        else if(strcmp(operaciones[i], "--rotar-derecha") == 0)
+            resultado(rotarDerecha(nombreImagen));
+        else if(strcmp(operaciones[i], "--metadata") == 0)
+            mostrarMetadata(nombreImagen);
+        else if(strcmp(operaciones[i], "--dump") == 0)
         {
             FILE *archivo = fopen(nombreImagen, "rb");
             dumpHex(archivo);
         }
-        if(strcmp(operaciones[i], "--prueba") == 0)
+        else if(strcmp(operaciones[i], "--prueba") == 0)
         {
             t_metadata data;
             FILE *imagen = fopen(nombreImagen, "rb");
             extraerMetadata(imagen, &data);
-
         }
+        else
+            printf("operacion %s desconoscido\n", operaciones[i]);
     }
     return TODO_OK;
 }
