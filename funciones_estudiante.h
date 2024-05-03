@@ -3,6 +3,8 @@
 
 #include "constantes.h"
 
+#define PREPARAR_ARCHIVOS(pathIn, pathOut) FILE *imagenIn = fopen((pathIn), "rb"), *imagenOut = fopen((pathOut), "wb")
+
 int solucion(int argc, char* argv[]);
 
 typedef struct
