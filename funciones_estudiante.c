@@ -70,6 +70,10 @@ void extraerMetadata(FILE *archivo, t_metadata *dataP)
 }
 int escalaDeGrises(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    unsigned int x, y;
+    unsigned char promedio;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_escala-de-grises.bmp");
     // Verifica si se abrio
@@ -77,20 +81,19 @@ int escalaDeGrises(char *nombreImagenIn)
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
 
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
-    for (int y = 0; y < metaP.alto; y++)
+    for (y = 0; y < metaP.alto; y++)
     {
-        for(int x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < metaP.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //calculo el promedio para la escala de grises
-            unsigned char promedio = (pixel.red + pixel.green + pixel.blue) / 3;
+            promedio = (pixel.red + pixel.green + pixel.blue) / 3;
             //modifico los valores para la imagen de salida
             pixel.red = promedio;
             pixel.green = promedio;
@@ -105,27 +108,29 @@ int escalaDeGrises(char *nombreImagenIn)
 }
 int tonalidadAzul(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    unsigned int x, y;
+    unsigned char aumetaBlue;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_tonalidad-azul.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
-    for (int y = 0; y < metaP.alto; y++)
+    for (y = 0; y < metaP.alto; y++)
     {
-        for(int x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < metaP.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //Aumenta al 50% el azul
-            unsigned char aumetaBlue = pixel.blue > 170 ? 255 : pixel.blue * 1.5;
-            //printf("aumentaBlue: %d | pixel.blue: %d\n", aumetaBlue, pixel.blue);
+            aumetaBlue = pixel.blue > 170 ? 255 : pixel.blue * 1.5;
             //modifico los valores para la imagen de salida
             pixel.blue = aumetaBlue;
             //escribo los bytes en la imagen de salida
@@ -139,27 +144,29 @@ int tonalidadAzul(char *nombreImagenIn)
 
 int tonalidadVerde(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    unsigned int x, y;
+    unsigned char aumeta;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_tonalidad-verde.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
-    for (int y = 0; y < metaP.alto; y++)
+    for (y = 0; y < metaP.alto; y++)
     {
-        for(int x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < metaP.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //Aumenta al 50% el azul
-            unsigned char aumeta = pixel.green > 170 ? 255 : pixel.green * 1.5;
-            //printf("aumentaBlue: %d | pixel.blue: %d\n", aumetaBlue, pixel.blue);
+            aumeta = pixel.green > 170 ? 255 : pixel.green * 1.5;
             //modifico los valores para la imagen de salida
             pixel.green = aumeta;
             //escribo los bytes en la imagen de salida
@@ -174,27 +181,29 @@ int tonalidadVerde(char *nombreImagenIn)
 
 int tonalidadRoja(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    unsigned int x, y;
+    unsigned char aumeta;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_tonalidad-roja.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
 
-    for (int y = 0; y < metaP.alto; y++)
+    for (y = 0; y < metaP.alto; y++)
     {
-        for(int x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < metaP.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //Aumenta
-            unsigned char aumeta = pixel.red > 170 ? 255 : pixel.red * 1.5;
-            //printf("aumentaBlue: %d | pixel.blue: %d\n", aumetaBlue, pixel.blue);
+            aumeta = pixel.red > 170 ? 255 : pixel.red * 1.5;
             //modifico los valores para la imagen de salida
             pixel.red = aumeta;
             //escribo los bytes en la imagen de salida
@@ -209,29 +218,28 @@ int tonalidadRoja(char *nombreImagenIn)
 
 int aumentarContraste(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    float factorAumento;
+    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_aumentar-contraste.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
-    float factorAumento;
-    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio;
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
-
-    for (int y = 0; y < metaP.alto; y++)
+    for (y = 0; y < metaP.alto; y++)
     {
-        for(int x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < metaP.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //calcular promedio
             promedio = (pixel.red + pixel.green + pixel.blue) / 3;
-
             //Si el promedio es mayor a 127 aumentamos sino reducimos
             if(promedio > 127)
             {
@@ -262,24 +270,24 @@ int aumentarContraste(char *nombreImagenIn)
 
 int reducirContraste(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    float factorAumento;
+    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_reducir-contraste.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
-    float factorAumento;
-    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio;
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando imagen
-    //printf("pointer: %d\n", ftell(imagenOut));
 
-    for (int y = 0; y < metaP.alto; y++)
+    for (y = 0; y < metaP.alto; y++)
     {
-        for(int x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < metaP.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -315,7 +323,8 @@ int reducirContraste(char *nombreImagenIn)
 
 int recortar(char *nombreImagenIn)
 {
-    int mitadAlto, mitadAncho, x, y;
+    //Declaracion de variables
+    unsigned int mitadAlto, mitadAncho, x, y, i, fila, col;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_recortar.bmp");
     // Verifica si se abrio
@@ -326,7 +335,7 @@ int recortar(char *nombreImagenIn)
     extraerMetadata(imagenIn, &metaP);
 
     //copiando data hasta comienzo de la imagen
-    for(int i = 0; i < metaP.comienzoImagen; i++)
+    for(i = 0; i < metaP.comienzoImagen; i++)
     {
         unsigned char byte;
         if(i == 2)
@@ -361,9 +370,9 @@ int recortar(char *nombreImagenIn)
     mitadAncho = metaP.ancho >> 1;
     t_pixel imagenOriginal[metaP.alto][metaP.ancho];
     //Copiamos la imagen en la matrizOriginal
-    for(int fila = 0; fila < metaP.alto; fila++)
+    for(fila = 0; fila < metaP.alto; fila++)
     {
-        for(int col = 0; col < metaP.ancho; col++)
+        for(col = 0; col < metaP.ancho; col++)
         {
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             imagenOriginal[fila][col] = pixel;
@@ -382,37 +391,37 @@ int recortar(char *nombreImagenIn)
 
 int rotarIzquierda(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    unsigned int fila, col;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_rotar-izquierda.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
     // Modificando cagecera para rotar: ancho y alto
     fseek(imagenOut, 18, SEEK_SET);
-    //fwrite(que voy a escribir, tamanio de byte,
     fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
     fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
     fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
-    //printf("posDespues: %ld\n", ftell(imagenOut));
 
     t_pixel imagenOriginal[metaP.alto][metaP.ancho];
     //Copiamos la imagen en la matrizOriginal
-    for(int fila = 0; fila < metaP.alto; fila++)
+    for(fila = 0; fila < metaP.alto; fila++)
     {
-        for(int col = 0; col < metaP.ancho; col++)
+        for(col = 0; col < metaP.ancho; col++)
         {
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             imagenOriginal[fila][col] = pixel;
         }
     }
-    for(int fila = 0; fila < metaP.ancho; fila++)
+    for(fila = 0; fila < metaP.ancho; fila++)
     {
-        for(int col = 0; col < metaP.alto; col++)
+        for(col = 0; col < metaP.alto; col++)
             fwrite(&imagenOriginal[metaP.alto - 1 - col][fila], sizeof(t_pixel), 1, imagenOut);
     }
     fclose(imagenIn);
@@ -421,13 +430,15 @@ int rotarIzquierda(char *nombreImagenIn)
 }
 int rotarDerecha(char *nombreImagenIn)
 {
+    //Declaracion de variables
+    unsigned int fila, col;
+    t_metadata metaP;
     t_pixel pixel;
     PREPARAR_ARCHIVOS(nombreImagenIn, "estudiante_rotar-derecha.bmp");
     // Verifica si se abrio
     if (imagenIn == NULL) return ARCHIVO_NO_ENCONTRADO;
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
@@ -439,18 +450,18 @@ int rotarDerecha(char *nombreImagenIn)
 
     t_pixel imagenOriginal[metaP.alto][metaP.ancho];
     //Copiamos la imagen en la matrizOriginal
-    for(int fila = 0; fila < metaP.alto; fila++)
+    for(fila = 0; fila < metaP.alto; fila++)
     {
-        for(int col = 0; col < metaP.ancho; col++)
+        for(col = 0; col < metaP.ancho; col++)
         {
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             imagenOriginal[fila][col] = pixel;
         }
     }
     // rotando imagen
-    for(int fila = 0; fila < metaP.ancho; fila++)
+    for(fila = 0; fila < metaP.ancho; fila++)
     {
-        for(int col = 0; col < metaP.alto; col++)
+        for(col = 0; col < metaP.alto; col++)
             fwrite(&imagenOriginal[col][metaP.ancho - 1 - fila], sizeof(t_pixel), 1, imagenOut);
     }
     fclose(imagenIn);
