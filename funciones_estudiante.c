@@ -24,7 +24,6 @@
 */
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include "constantes.h"
 #include "funciones_estudiante.h"
 
@@ -68,6 +67,40 @@ void extraerMetadata(FILE *archivo, t_metadata *dataP)
     fseek(archivo, 28, SEEK_SET);
     fread(&dataP->profundida, 2, 1, archivo);
     rewind(archivo);
+}
+int negativo(FILE *imagenIn)
+{
+    //Declaracion de variables
+    unsigned int x, y;
+    t_metadata metaP;
+    t_pixel pixel, negativoPixel;
+    PREPARAR_ARCHIVO_SALIDA("estudiante_negativo.bmp");
+    // Verifica si se abrio
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+
+    //lee y guardar datos
+    extraerMetadata(imagenIn, &metaP);
+    //copiando data hasta comienzo de la imagen
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    // Modificando imagen
+
+    for (y = 0; y < metaP.alto; y++)
+    {
+        for(x = 0; x < metaP.ancho; x++)
+        {
+            //leer el pixel de la imagen de entrada
+            fread(&pixel, sizeof(pixel), 1, imagenIn);
+            //modifico los valores para la imagen
+            negativoPixel.red = ~pixel.red;
+            negativoPixel.green = ~pixel.green;
+            negativoPixel.blue = ~pixel.blue;
+            //escribo los bytes en la imagen de salida
+            fwrite(&negativoPixel, sizeof(negativoPixel), 1, imagenOut);
+        }
+    }
+
+    fclose(imagenOut);
+    return NEGATIVO_OK;
 }
 int escalaDeGrises(FILE *imagenIn)
 {
@@ -319,7 +352,8 @@ int reducirContraste(FILE *imagenIn)
 int recortar(FILE *imagenIn)
 {
     //Declaracion de variables
-    unsigned int mitadAlto, mitadAncho, x, y, i, fila, col;
+    unsigned int mitadAlto, mitadAncho, x, y, i, fila, col, mod;
+    unsigned char byte;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_recortar.bmp");
     // Verifica si se abrio
@@ -328,32 +362,28 @@ int recortar(FILE *imagenIn)
     t_metadata metaP;
     extraerMetadata(imagenIn, &metaP);
 
-    //copiando data hasta comienzo de la imagen
+    //copiando data hasta comienzo de la imagen modificando el tamanio, ancho y alto.
     for(i = 0; i < metaP.comienzoImagen; i++)
     {
-        unsigned char byte;
         if(i == 2)
         {
-            unsigned int tam;
-            fread(&tam, 4, 1, imagenIn);
-            tam = tam >> 2;
-            fwrite(&tam, 4, 1, imagenOut);
+            fread(&mod, 4, 1, imagenIn);
+            mod = mod >> 2;
+            fwrite(&mod, 4, 1, imagenOut);
             i += 4;
         }
         if(i == 18)
         {
-            int unsigned ancho;
-            fread(&ancho, 4, 1, imagenIn);
-            ancho = ancho >> 1;
-            fwrite(&ancho, 4, 1, imagenOut);
+            fread(&mod, 4, 1, imagenIn);
+            mod = mod >> 1;
+            fwrite(&mod, 4, 1, imagenOut);
             i += 4;
         }
         if(i == 22)
         {
-            int unsigned alto;
-            fread(&alto, 4, 1, imagenIn);
-            alto = alto >> 1;
-            fwrite(&alto, 4, 1, imagenOut);
+            fread(&mod, 4, 1, imagenIn);
+            mod = mod >> 1;
+            fwrite(&mod, 4, 1, imagenOut);
             i += 4;
         }
 
@@ -396,7 +426,7 @@ int rotarIzquierda(FILE *imagenIn)
     extraerMetadata(imagenIn, &metaP);
     //copiando data hasta comienzo de la imagen
     copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
-    // Modificando cagecera para rotar: ancho y alto
+    // Modificando cabecera para rotar: ancho y alto ej: 240x360 -> 360x240
     fseek(imagenOut, 18, SEEK_SET);
     fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
     fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
@@ -484,7 +514,7 @@ void mostrarMetadata(FILE *archivo)
     printf("profundidad: %d\n", meta.profundida);
 }
 
-bool resultado(const int res)
+void resultado(const int res)
 {
     switch (res)
     {
@@ -512,10 +542,11 @@ bool resultado(const int res)
     case CONTRASTE_OK:
         printf("Contraste completado.\n");
         break;
+    case NEGATIVO_OK:
+        printf("Negativo completado.\n");
     default:
         printf("no se que codigo de error es XD\n");
     }
-    return true;
 }
 
 int solucion(int argc, char* argv[])
@@ -559,6 +590,8 @@ int solucion(int argc, char* argv[])
             resultado(rotarIzquierda(imagenOriginal));
         else if(strcmp(operaciones[i], "--rotar-derecha") == 0)
             resultado(rotarDerecha(imagenOriginal));
+        else if(strcmp(operaciones[i], "--negativo") == 0)
+            resultado(negativo(imagenOriginal));
         else if(strcmp(operaciones[i], "--metadata") == 0)
             mostrarMetadata(imagenOriginal);
         else if(strcmp(operaciones[i], "--dump") == 0)

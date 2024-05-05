@@ -1,6 +1,5 @@
 #ifndef FUNCIONES_ESTUDIANTE_H_INCLUDED
 #define FUNCIONES_ESTUDIANTE_H_INCLUDED
-#include <stdbool.h>
 #include "constantes.h"
 
 #define PREPARAR_ARCHIVO_SALIDA(pathOut) FILE *imagenOut = fopen((pathOut), "wb")
@@ -9,6 +8,7 @@
 #define RECORTAR_OK 50
 #define ROTAR_OK 60
 #define CONTRASTE_OK 70
+#define NEGATIVO_OK 80
 
 int solucion(int argc, char* argv[]);
 
