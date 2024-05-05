@@ -1,9 +1,14 @@
 #ifndef FUNCIONES_ESTUDIANTE_H_INCLUDED
 #define FUNCIONES_ESTUDIANTE_H_INCLUDED
-
+#include <stdbool.h>
 #include "constantes.h"
 
-#define PREPARAR_ARCHIVOS(pathIn, pathOut) FILE *imagenIn = fopen((pathIn), "rb"), *imagenOut = fopen((pathOut), "wb")
+#define PREPARAR_ARCHIVO_SALIDA(pathOut) FILE *imagenOut = fopen((pathOut), "wb")
+#define ESCALA_DE_GRISES_OK 30
+#define TONALIDAD_OK 40
+#define RECORTAR_OK 50
+#define ROTAR_OK 60
+#define CONTRASTE_OK 70
 
 int solucion(int argc, char* argv[]);
 
@@ -23,16 +28,31 @@ typedef struct
     unsigned short profundida;
 } t_metadata;
 
+/*
+typedef struct
+{
+    bool seCompletoEscalaDeGrises;
+    bool seCompletoTonalidadRoja;
+    bool seCompletoTonalidadVerde;
+    bool seCompletoTonalidadAzul;
+    bool seCompletoAumentarContraste;   //Implementacion para no repetir operaciones
+    bool seCompletoReducirContraste;
+    bool seCompletoRecortar;
+    bool seCompletoRotarDerecha;
+    bool seCompletoRotarIzquierda;
+} t_statusOperation;
+*/
+
 void dumpHex(FILE *archivo);
 void extraerMetadata(FILE *archivo, t_metadata *dataP);
 
-int escalaDeGrises(char *nombreImagenIn);
-int tonalidadAzul(char *nombreImagenIn);
-int tonalidadVerde(char *nombreImagenIn);
-int tonalidadRoja(char *nombreImagenIn);
-int aumentarContraste(char *nombreImagenIn);
-int reducirContraste(char *nombreImagenIn);
+int escalaDeGrises(FILE *imagenIn);
+int tonalidadAzul(FILE *imagenIn);
+int tonalidadVerde(FILE *imagenIn);
+int tonalidadRoja(FILE *imagenIn);
+int aumentarContraste(FILE *imagenIn);
+int reducirContraste(FILE *imagenIn);
 
-int recortar(char *nombreImagenIn);
+int recortar(FILE *imagenIn);
 
 #endif // FUNCIONES_ESTUDIANTE_H_INCLUDED
