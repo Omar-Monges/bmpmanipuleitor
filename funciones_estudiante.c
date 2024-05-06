@@ -490,6 +490,33 @@ int rotarDerecha(FILE *imagenIn)
     fclose(imagenOut);
     return ROTAR_OK;
 }
+int comodin(FILE *imagenIn)
+{
+    //Declaracion de variables
+    unsigned int fila, col;
+    t_metadata metaP;
+    t_pixel pixel;
+    PREPARAR_ARCHIVO_SALIDA("estudiante_comodin.bmp");
+    // Verifica si se abrio
+    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    //lee y guardar datos
+    extraerMetadata(imagenIn, &metaP);
+    //copiando data hasta comienzo de la imagen
+    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    for(fila = 0; fila < metaP.alto; fila++)
+    {
+        fseek(imagenIn, sizeof(t_pixel) * (metaP.ancho), SEEK_CUR);
+        for(col = 0; col < metaP.ancho; col++)
+        {
+            fseek(imagenIn, -sizeof(t_pixel), SEEK_CUR);
+            fread(&pixel, sizeof(t_pixel), 1, imagenIn);
+            fwrite(&pixel, sizeof(t_pixel), 1, imagenOut);
+            fseek(imagenIn, -sizeof(t_pixel), SEEK_CUR);
+        }
+        fseek(imagenIn, sizeof(t_pixel) * (metaP.ancho), SEEK_CUR);
+    }
+    return COMODIN_OK;
+}
 void mostrarMetadata(FILE *archivo)
 {
     t_metadata meta;
@@ -544,6 +571,10 @@ void resultado(const int res)
         break;
     case NEGATIVO_OK:
         printf("Negativo completado.\n");
+        break;
+    case COMODIN_OK:
+        printf("Comodin completado.\n");
+        break;
     default:
         printf("no se que codigo de error es XD\n");
     }
@@ -553,6 +584,7 @@ int solucion(int argc, char* argv[])
 {
     int i, numOperaciones = 0;
     char *operaciones[50], *nombreImagen;
+    FILE *imagenOriginal;
     if(argc < 3)
     {
         printf("Uso: %s <argumentos> entre las cuales esta la imagen\n", argv[0]);
@@ -568,7 +600,7 @@ int solucion(int argc, char* argv[])
         else
             nombreImagen = argv[i];
     }
-    FILE *imagenOriginal = fopen(nombreImagen, "rb");
+    imagenOriginal = fopen(nombreImagen, "rb");
     if (imagenOriginal == NULL) return ARCHIVO_NO_ENCONTRADO;
     for(i = 0; i < numOperaciones; i++)
     {
@@ -596,8 +628,10 @@ int solucion(int argc, char* argv[])
             mostrarMetadata(imagenOriginal);
         else if(strcmp(operaciones[i], "--dump") == 0)
             dumpHex(imagenOriginal);
+        else if(strcmp(operaciones[i], "--comodin") == 0)
+            resultado(comodin(imagenOriginal));
         else
-            printf("operacion %s desconoscido\n", operaciones[i]);
+            printf("operacion %s desconocido\n", operaciones[i]);
     }
     fclose(imagenOriginal);
     return TODO_OK;

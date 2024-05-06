@@ -9,6 +9,7 @@
 #define ROTAR_OK 60
 #define CONTRASTE_OK 70
 #define NEGATIVO_OK 80
+#define COMODIN_OK 90
 
 int solucion(int argc, char* argv[]);
 
