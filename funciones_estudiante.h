@@ -3,6 +3,30 @@
 #include "constantes.h"
 
 #define PREPARAR_ARCHIVO_SALIDA(pathOut) FILE *imagenOut = fopen((pathOut), "wb")
+#define true 1
+#define false 0
+
+//operaciones
+#define NEGATIVO "--negativo"
+#define ESCALA_DE_GRISES "--escala-de-grises"
+#define AUMENTAR_CONTRASTE "--aumentar-contraste"
+#define REDUCIR_CONTRASTE "--reducir-contraste"
+#define TONALIDAD_AZUL "--tonalidad-azul"
+#define TONALIDAD_VERDE "--tonalidad-verde"
+#define TONALIDAD_ROJA "--tonalidad-roja"
+#define RECORTAR "--recortar"
+#define ROTAR_DERECHA "--rotar-derecha"
+#define ROTAR_IZQUIERDA "--rotar-izquierda"
+#define COMODIN "--comodin"
+#define DUMP "--dump"
+#define METADATA "--metadata"
+
+//Codigos de resultados
+/*
+#define TODO_OK 0
+#define ARCHIVO_NO_ENCONTRADO 10
+#define NO_SE_PUEDE_CREAR_ARCHIVO 20
+*/
 #define ESCALA_DE_GRISES_OK 30
 #define TONALIDAD_OK 40
 #define RECORTAR_OK 50

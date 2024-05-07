@@ -72,21 +72,21 @@ int negativo(FILE *imagenIn)
 {
     //Declaracion de variables
     unsigned int x, y;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel, negativoPixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_negativo.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
 
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
 
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -107,21 +107,21 @@ int escalaDeGrises(FILE *imagenIn)
     //Declaracion de variables
     unsigned int x, y;
     unsigned char promedio;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_escala-de-grises.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
 
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
 
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -144,20 +144,20 @@ int tonalidadAzul(FILE *imagenIn)
     //Declaracion de variables
     unsigned int x, y;
     unsigned char aumetaBlue;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-azul.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
 
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -179,20 +179,20 @@ int tonalidadVerde(FILE *imagenIn)
     //Declaracion de variables
     unsigned int x, y;
     unsigned char aumeta;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-verde.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
 
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -215,20 +215,20 @@ int tonalidadRoja(FILE *imagenIn)
     //Declaracion de variables
     unsigned int x, y;
     unsigned char aumeta;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-roja.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
 
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -251,19 +251,19 @@ int aumentarContraste(FILE *imagenIn)
     //Declaracion de variables
     float factorAumento;
     unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_aumentar-contraste.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -302,20 +302,20 @@ int reducirContraste(FILE *imagenIn)
     //Declaracion de variables
     float factorAumento;
     unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_reducir-contraste.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando imagen
 
-    for (y = 0; y < metaP.alto; y++)
+    for (y = 0; y < cabecera.alto; y++)
     {
-        for(x = 0; x < metaP.ancho; x++)
+        for(x = 0; x < cabecera.ancho; x++)
         {
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
@@ -359,11 +359,11 @@ int recortar(FILE *imagenIn)
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    t_metadata metaP;
-    extraerMetadata(imagenIn, &metaP);
+    t_metadata cabecera;
+    extraerMetadata(imagenIn, &cabecera);
 
     //copiando data hasta comienzo de la imagen modificando el tamanio, ancho y alto.
-    for(i = 0; i < metaP.comienzoImagen; i++)
+    for(i = 0; i < cabecera.comienzoImagen; i++)
     {
         if(i == 2)
         {
@@ -390,13 +390,13 @@ int recortar(FILE *imagenIn)
         fread(&byte, sizeof(unsigned char), 1, imagenIn);
         fwrite(&byte, sizeof(unsigned char), 1, imagenOut);
     }
-    mitadAlto = metaP.alto >> 1;
-    mitadAncho = metaP.ancho >> 1;
-    t_pixel imagenOriginal[metaP.alto][metaP.ancho];
+    mitadAlto = cabecera.alto >> 1;
+    mitadAncho = cabecera.ancho >> 1;
+    t_pixel imagenOriginal[cabecera.alto][cabecera.ancho];
     //Copiamos la imagen en la matrizOriginal
-    for(fila = 0; fila < metaP.alto; fila++)
+    for(fila = 0; fila < cabecera.alto; fila++)
     {
-        for(col = 0; col < metaP.ancho; col++)
+        for(col = 0; col < cabecera.ancho; col++)
         {
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             imagenOriginal[fila][col] = pixel;
@@ -417,35 +417,35 @@ int rotarIzquierda(FILE *imagenIn)
 {
     //Declaracion de variables
     unsigned int fila, col;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_rotar-izquierda.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando cabecera para rotar: ancho y alto ej: 240x360 -> 360x240
     fseek(imagenOut, 18, SEEK_SET);
-    fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
-    fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
-    fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
+    fwrite(&cabecera.alto, sizeof(cabecera.alto), 1, imagenOut);
+    fwrite(&cabecera.ancho, sizeof(cabecera.ancho), 1, imagenOut);
+    fseek(imagenOut, cabecera.comienzoImagen, SEEK_SET);
 
-    t_pixel imagenOriginal[metaP.alto][metaP.ancho];
+    t_pixel imagenOriginal[cabecera.alto][cabecera.ancho];
     //Copiamos la imagen en la matrizOriginal
-    for(fila = 0; fila < metaP.alto; fila++)
+    for(fila = 0; fila < cabecera.alto; fila++)
     {
-        for(col = 0; col < metaP.ancho; col++)
+        for(col = 0; col < cabecera.ancho; col++)
         {
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             imagenOriginal[fila][col] = pixel;
         }
     }
-    for(fila = 0; fila < metaP.ancho; fila++)
+    for(fila = 0; fila < cabecera.ancho; fila++)
     {
-        for(col = 0; col < metaP.alto; col++)
-            fwrite(&imagenOriginal[metaP.alto - 1 - col][fila], sizeof(t_pixel), 1, imagenOut);
+        for(col = 0; col < cabecera.alto; col++)
+            fwrite(&imagenOriginal[cabecera.alto - 1 - col][fila], sizeof(t_pixel), 1, imagenOut);
     }
 
     fclose(imagenOut);
@@ -455,36 +455,36 @@ int rotarDerecha(FILE *imagenIn)
 {
     //Declaracion de variables
     unsigned int fila, col;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_rotar-derecha.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
     // Modificando cagecera para rotar: ancho y alto
     fseek(imagenOut, 18, SEEK_SET);
-    fwrite(&metaP.alto, sizeof(metaP.alto), 1, imagenOut);
-    fwrite(&metaP.ancho, sizeof(metaP.ancho), 1, imagenOut);
-    fseek(imagenOut, metaP.comienzoImagen, SEEK_SET);
+    fwrite(&cabecera.alto, sizeof(cabecera.alto), 1, imagenOut);
+    fwrite(&cabecera.ancho, sizeof(cabecera.ancho), 1, imagenOut);
+    fseek(imagenOut, cabecera.comienzoImagen, SEEK_SET);
 
-    t_pixel imagenOriginal[metaP.alto][metaP.ancho];
+    t_pixel imagenOriginal[cabecera.alto][cabecera.ancho];
     //Copiamos la imagen en la matrizOriginal
-    for(fila = 0; fila < metaP.alto; fila++)
+    for(fila = 0; fila < cabecera.alto; fila++)
     {
-        for(col = 0; col < metaP.ancho; col++)
+        for(col = 0; col < cabecera.ancho; col++)
         {
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             imagenOriginal[fila][col] = pixel;
         }
     }
     // rotando imagen
-    for(fila = 0; fila < metaP.ancho; fila++)
+    for(fila = 0; fila < cabecera.ancho; fila++)
     {
-        for(col = 0; col < metaP.alto; col++)
-            fwrite(&imagenOriginal[col][metaP.ancho - 1 - fila], sizeof(t_pixel), 1, imagenOut);
+        for(col = 0; col < cabecera.alto; col++)
+            fwrite(&imagenOriginal[col][cabecera.ancho - 1 - fila], sizeof(t_pixel), 1, imagenOut);
     }
 
     fclose(imagenOut);
@@ -494,26 +494,26 @@ int comodin(FILE *imagenIn)
 {
     //Declaracion de variables
     unsigned int fila, col;
-    t_metadata metaP;
+    t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_comodin.bmp");
     // Verifica si se abrio
     if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
     //lee y guardar datos
-    extraerMetadata(imagenIn, &metaP);
+    extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
-    copiandoCabecera(imagenIn, imagenOut, metaP.comienzoImagen);
-    for(fila = 0; fila < metaP.alto; fila++)
+    copiandoCabecera(imagenIn, imagenOut, cabecera.comienzoImagen);
+    for(fila = 0; fila < cabecera.alto; fila++)
     {
-        fseek(imagenIn, sizeof(t_pixel) * (metaP.ancho), SEEK_CUR);
-        for(col = 0; col < metaP.ancho; col++)
+        fseek(imagenIn, sizeof(t_pixel) * (cabecera.ancho), SEEK_CUR);
+        for(col = 0; col < cabecera.ancho; col++)
         {
             fseek(imagenIn, -sizeof(t_pixel), SEEK_CUR);
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             fwrite(&pixel, sizeof(t_pixel), 1, imagenOut);
             fseek(imagenIn, -sizeof(t_pixel), SEEK_CUR);
         }
-        fseek(imagenIn, sizeof(t_pixel) * (metaP.ancho), SEEK_CUR);
+        fseek(imagenIn, sizeof(t_pixel) * (cabecera.ancho), SEEK_CUR);
     }
     return COMODIN_OK;
 }
@@ -579,6 +579,12 @@ void resultado(const int res)
         printf("no se que codigo de error es XD\n");
     }
 }
+int esOperacion(const char *operacionValida, const char *operacion)
+{
+    if(strcmp(operacionValida, operacion) == 0)
+        return true;
+    return false;
+}
 
 int solucion(int argc, char* argv[])
 {
@@ -604,31 +610,31 @@ int solucion(int argc, char* argv[])
     if (imagenOriginal == NULL) return ARCHIVO_NO_ENCONTRADO;
     for(i = 0; i < numOperaciones; i++)
     {
-        if(strcmp(operaciones[i], "--escala-de-grises") == 0)
+        if(esOperacion(ESCALA_DE_GRISES, operaciones[i]))
             resultado(escalaDeGrises(imagenOriginal));
-        else if(strcmp(operaciones[i], "--tonalidad-roja") == 0)
+        else if(esOperacion(TONALIDAD_ROJA, operaciones[i]))
             resultado(tonalidadRoja(imagenOriginal));
-        else if(strcmp(operaciones[i], "--tonalidad-verde") == 0)
+        else if(esOperacion(TONALIDAD_VERDE, operaciones[i]))
             resultado(tonalidadVerde(imagenOriginal));
-        else if(strcmp(operaciones[i], "--tonalidad-azul") == 0)
+        else if(esOperacion(TONALIDAD_AZUL, operaciones[i]))
             resultado(tonalidadAzul(imagenOriginal));
-        else if(strcmp(operaciones[i], "--aumentar-contraste") == 0)
+        else if(esOperacion(AUMENTAR_CONTRASTE, operaciones[i]))
             resultado(aumentarContraste(imagenOriginal));
-        else if(strcmp(operaciones[i], "--reducir-contraste") == 0)
+        else if(esOperacion(REDUCIR_CONTRASTE, operaciones[i]))
             resultado(reducirContraste(imagenOriginal));
-        else if(strcmp(operaciones[i], "--recortar") == 0)
+        else if(esOperacion(RECORTAR, operaciones[i]))
             resultado(recortar(imagenOriginal));
-        else if(strcmp(operaciones[i], "--rotar-izquierda") == 0)
+        else if(esOperacion(ROTAR_IZQUIERDA, operaciones[i]))
             resultado(rotarIzquierda(imagenOriginal));
-        else if(strcmp(operaciones[i], "--rotar-derecha") == 0)
+        else if(esOperacion(ROTAR_DERECHA, operaciones[i]))
             resultado(rotarDerecha(imagenOriginal));
-        else if(strcmp(operaciones[i], "--negativo") == 0)
+        else if(esOperacion(NEGATIVO, operaciones[i]))
             resultado(negativo(imagenOriginal));
-        else if(strcmp(operaciones[i], "--metadata") == 0)
+        else if(esOperacion(METADATA, operaciones[i]))
             mostrarMetadata(imagenOriginal);
-        else if(strcmp(operaciones[i], "--dump") == 0)
+        else if(esOperacion(DUMP, operaciones[i]))
             dumpHex(imagenOriginal);
-        else if(strcmp(operaciones[i], "--comodin") == 0)
+        else if(esOperacion(COMODIN, operaciones[i]))
             resultado(comodin(imagenOriginal));
         else
             printf("operacion %s desconocido\n", operaciones[i]);
