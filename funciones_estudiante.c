@@ -28,7 +28,7 @@
 #include "funciones_estudiante.h"
 
 
-void dumpHex(FILE *archivo)
+int dumpHex(FILE *archivo)
 {
     unsigned int i = 0, leido;
     while(!feof(archivo))
@@ -37,6 +37,7 @@ void dumpHex(FILE *archivo)
         printf("byte:%d hexa: %x\n", i, leido);
         i++;
     }
+    return DUMP_OK;
 }
 
 void copiandoCabecera(FILE *in, FILE *out, unsigned int comienzoImagen)
@@ -76,7 +77,7 @@ int negativo(FILE *imagenIn)
     t_pixel pixel, negativoPixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_negativo.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
 
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
@@ -111,7 +112,7 @@ int escalaDeGrises(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_escala-de-grises.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
 
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
@@ -148,7 +149,7 @@ int tonalidadAzul(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-azul.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -171,7 +172,7 @@ int tonalidadAzul(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return TONALIDAD_OK;
+    return TONALIDAD_AZUL_OK;
 }
 
 int tonalidadVerde(FILE *imagenIn)
@@ -183,7 +184,7 @@ int tonalidadVerde(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-verde.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -206,7 +207,7 @@ int tonalidadVerde(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return TONALIDAD_OK;
+    return TONALIDAD_VERDE_OK;
 }
 
 
@@ -219,7 +220,7 @@ int tonalidadRoja(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-roja.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -242,7 +243,7 @@ int tonalidadRoja(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return TONALIDAD_OK;
+    return TONALIDAD_ROJA_OK;
 }
 
 
@@ -255,7 +256,7 @@ int aumentarContraste(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_aumentar-contraste.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -293,7 +294,7 @@ int aumentarContraste(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return CONTRASTE_OK;
+    return AUMENTAR_CONTRASTE_OK;
 }
 
 
@@ -306,7 +307,7 @@ int reducirContraste(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_reducir-contraste.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -346,7 +347,7 @@ int reducirContraste(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return CONTRASTE_OK;
+    return REDUCIR_CONTRASTE_OK;
 }
 
 int recortar(FILE *imagenIn)
@@ -357,7 +358,7 @@ int recortar(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_recortar.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     t_metadata cabecera;
     extraerMetadata(imagenIn, &cabecera);
@@ -421,7 +422,7 @@ int rotarIzquierda(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_rotar-izquierda.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -449,7 +450,7 @@ int rotarIzquierda(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return ROTAR_OK;
+    return ROTAR_IZQUIERDA_OK;
 }
 int rotarDerecha(FILE *imagenIn)
 {
@@ -459,7 +460,7 @@ int rotarDerecha(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_rotar-derecha.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -488,7 +489,7 @@ int rotarDerecha(FILE *imagenIn)
     }
 
     fclose(imagenOut);
-    return ROTAR_OK;
+    return ROTAR_DERECHA_OK;
 }
 int comodin(FILE *imagenIn)
 {
@@ -498,7 +499,7 @@ int comodin(FILE *imagenIn)
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_comodin.bmp");
     // Verifica si se abrio
-    if (imagenOut == NULL) return NO_SE_PUEDE_CREAR_ARCHIVO;
+    if (imagenOut == NULL) return NO_PUDE_CREAR_ARCHIVO;
     //lee y guardar datos
     extraerMetadata(imagenIn, &cabecera);
     //copiando data hasta comienzo de la imagen
@@ -517,7 +518,7 @@ int comodin(FILE *imagenIn)
     }
     return COMODIN_OK;
 }
-void mostrarMetadata(FILE *archivo)
+int mostrarMetadata(FILE *archivo)
 {
     t_metadata meta;
     fseek(archivo, 2, SEEK_SET);
@@ -539,45 +540,65 @@ void mostrarMetadata(FILE *archivo)
     printf("tamanio del encabezado: %d bytes\n", meta.tamEncabezado);
     printf("ancho x alto: %d x %d pixeles\n", meta.ancho, meta.alto);
     printf("profundidad: %d\n", meta.profundida);
+    return METADATA_OK;
 }
 
-void resultado(const int res)
+int resultado(const int res, const char comando[])
 {
     switch (res)
     {
-    case TODO_OK:
+    case TODO_BIEN:
         printf("todo okey\n");
         break;
-    case ARCHIVO_NO_ENCONTRADO:
+    case NO_ENCONTRE_ARCHIVO:
         printf("Archivo no encontrado\n");
         break;
-    case NO_SE_PUEDE_CREAR_ARCHIVO:
+    case NO_PUDE_CREAR_ARCHIVO:
         printf("No se puede crear archivo\n");
         break;
-    case ESCALA_DE_GRISES_OK:
-        printf("Escala de grises completado.\n");
-        break;
-    case TONALIDAD_OK:
-        printf("Tonalidad completado.\n");
-        break;
-    case RECORTAR_OK:
-        printf("Recortar completado.\n");
-        break;
-    case ROTAR_OK:
-        printf("Rotar completado.\n");
-        break;
-    case CONTRASTE_OK:
-        printf("Contraste completado.\n");
+    case REPETIDO:
+        printf("Operacion %s ya se ejecuto.\n", comando);
         break;
     case NEGATIVO_OK:
-        printf("Negativo completado.\n");
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case ESCALA_DE_GRISES_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case TONALIDAD_AZUL_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case TONALIDAD_ROJA_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case TONALIDAD_VERDE_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case ROTAR_DERECHA_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case ROTAR_IZQUIERDA_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case AUMENTAR_CONTRASTE_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case REDUCIR_CONTRASTE_OK:
+        printf("Operacion %s completado.\n", comando);
         break;
     case COMODIN_OK:
-        printf("Comodin completado.\n");
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case DUMP_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
+    case METADATA_OK:
+        printf("Operacion %s completado.\n", comando);
         break;
     default:
-        printf("no se que codigo de error es XD\n");
+        printf("No se que codigo de error es XD\n");
     }
+    return true;
 }
 int esOperacion(const char *operacionValida, const char *operacion)
 {
@@ -585,12 +606,27 @@ int esOperacion(const char *operacionValida, const char *operacion)
         return true;
     return false;
 }
+int seRepite(const t_parametros *param, const int operacion)
+{
+    if(param->status[operacion] != false)
+        return true;
+    return false;
+}
+void initComandos(t_parametros *comandos, const int cantOperacionesValidas)
+{
+    int i;
+    comandos->numOperaciones = 0;
+    for(i = 0; i < cantOperacionesValidas; i++)
+        comandos->status[i] = false;
+}
+
 
 int solucion(int argc, char* argv[])
 {
-    int i, numOperaciones = 0;
-    char *operaciones[50], *nombreImagen;
+    int i; //*numOperaciones;
+    t_parametros comando;
     FILE *imagenOriginal;
+    initComandos(&comando, CANT_COMANDOS);
     if(argc < 3)
     {
         printf("Uso: %s <argumentos> entre las cuales esta la imagen\n", argv[0]);
@@ -600,45 +636,71 @@ int solucion(int argc, char* argv[])
     {
         if(strncmp(argv[i], "--", 2) == 0)
         {
-            operaciones[numOperaciones] = argv[i];
-            numOperaciones++;
+            comando.operaciones[comando.numOperaciones] = argv[i];
+            comando.numOperaciones++;
         }
         else
-            nombreImagen = argv[i];
+            comando.nombreImagen = argv[i];
     }
-    imagenOriginal = fopen(nombreImagen, "rb");
-    if (imagenOriginal == NULL) return ARCHIVO_NO_ENCONTRADO;
-    for(i = 0; i < numOperaciones; i++)
+    imagenOriginal = fopen(comando.nombreImagen, "rb");
+    if (imagenOriginal == NULL) return resultado(NO_ENCONTRE_ARCHIVO, comando.nombreImagen);
+    for(i = 0; i < comando.numOperaciones; i++)
     {
-        if(esOperacion(ESCALA_DE_GRISES, operaciones[i]))
-            resultado(escalaDeGrises(imagenOriginal));
-        else if(esOperacion(TONALIDAD_ROJA, operaciones[i]))
-            resultado(tonalidadRoja(imagenOriginal));
-        else if(esOperacion(TONALIDAD_VERDE, operaciones[i]))
-            resultado(tonalidadVerde(imagenOriginal));
-        else if(esOperacion(TONALIDAD_AZUL, operaciones[i]))
-            resultado(tonalidadAzul(imagenOriginal));
-        else if(esOperacion(AUMENTAR_CONTRASTE, operaciones[i]))
-            resultado(aumentarContraste(imagenOriginal));
-        else if(esOperacion(REDUCIR_CONTRASTE, operaciones[i]))
-            resultado(reducirContraste(imagenOriginal));
-        else if(esOperacion(RECORTAR, operaciones[i]))
-            resultado(recortar(imagenOriginal));
-        else if(esOperacion(ROTAR_IZQUIERDA, operaciones[i]))
-            resultado(rotarIzquierda(imagenOriginal));
-        else if(esOperacion(ROTAR_DERECHA, operaciones[i]))
-            resultado(rotarDerecha(imagenOriginal));
-        else if(esOperacion(NEGATIVO, operaciones[i]))
-            resultado(negativo(imagenOriginal));
-        else if(esOperacion(METADATA, operaciones[i]))
-            mostrarMetadata(imagenOriginal);
-        else if(esOperacion(DUMP, operaciones[i]))
-            dumpHex(imagenOriginal);
-        else if(esOperacion(COMODIN, operaciones[i]))
-            resultado(comodin(imagenOriginal));
+        if(esOperacion(ESCALA_DE_GRISES, comando.operaciones[i]))
+            !seRepite(&comando, ESCALA_DE_GRISES_OK)
+                ? comando.status[ESCALA_DE_GRISES_OK] = resultado(escalaDeGrises(imagenOriginal), ESCALA_DE_GRISES)
+                : resultado(REPETIDO, ESCALA_DE_GRISES);
+        else if(esOperacion(TONALIDAD_ROJA, comando.operaciones[i]))
+            !seRepite(&comando, TONALIDAD_ROJA_OK)
+                ? comando.status[TONALIDAD_ROJA_OK] = resultado(tonalidadRoja(imagenOriginal), TONALIDAD_ROJA)
+                : resultado(REPETIDO, TONALIDAD_ROJA);
+        else if(esOperacion(TONALIDAD_VERDE, comando.operaciones[i]))
+            !seRepite(&comando, TONALIDAD_VERDE_OK)
+                ? comando.status[TONALIDAD_VERDE_OK] = resultado(tonalidadVerde(imagenOriginal), TONALIDAD_VERDE)
+                : resultado(REPETIDO, TONALIDAD_VERDE);
+        else if(esOperacion(TONALIDAD_AZUL, comando.operaciones[i]))
+            !seRepite(&comando, TONALIDAD_AZUL_OK)
+                ? comando.status[TONALIDAD_AZUL_OK] = resultado(tonalidadAzul(imagenOriginal), TONALIDAD_AZUL)
+                : resultado(REPETIDO, TONALIDAD_AZUL);
+        else if(esOperacion(AUMENTAR_CONTRASTE, comando.operaciones[i]))
+            !seRepite(&comando, AUMENTAR_CONTRASTE_OK)
+                ? comando.status[AUMENTAR_CONTRASTE_OK] = resultado(aumentarContraste(imagenOriginal), AUMENTAR_CONTRASTE)
+                : resultado(REPETIDO, AUMENTAR_CONTRASTE);
+        else if(esOperacion(REDUCIR_CONTRASTE, comando.operaciones[i]))
+            !seRepite(&comando, REDUCIR_CONTRASTE_OK)
+                ? comando.status[REDUCIR_CONTRASTE_OK] = resultado(reducirContraste(imagenOriginal), REDUCIR_CONTRASTE)
+                : resultado(REPETIDO, REDUCIR_CONTRASTE);
+        else if(esOperacion(RECORTAR, comando.operaciones[i]))
+            !seRepite(&comando, RECORTAR_OK)
+                ? comando.status[RECORTAR_OK] = resultado(recortar(imagenOriginal), RECORTAR)
+                : resultado(REPETIDO, RECORTAR);
+        else if(esOperacion(ROTAR_IZQUIERDA, comando.operaciones[i]))
+            !seRepite(&comando, ROTAR_IZQUIERDA_OK)
+                ? comando.status[ROTAR_IZQUIERDA_OK] = resultado(rotarIzquierda(imagenOriginal), ROTAR_IZQUIERDA)
+                : resultado(REPETIDO, ROTAR_IZQUIERDA);
+        else if(esOperacion(ROTAR_DERECHA, comando.operaciones[i]))
+            !seRepite(&comando, ROTAR_DERECHA_OK)
+                ? comando.status[ROTAR_DERECHA_OK] = resultado(rotarDerecha(imagenOriginal), ROTAR_DERECHA)
+                : resultado(REPETIDO, ROTAR_DERECHA);
+        else if(esOperacion(NEGATIVO, comando.operaciones[i]))
+            !seRepite(&comando, NEGATIVO_OK)
+                ? comando.status[NEGATIVO_OK] = resultado(negativo(imagenOriginal), NEGATIVO)
+                : resultado(REPETIDO, NEGATIVO);
+        else if(esOperacion(METADATA, comando.operaciones[i]))
+            !seRepite(&comando, METADATA_OK)
+                ? comando.status[METADATA_OK] = resultado(mostrarMetadata(imagenOriginal), METADATA)
+                : resultado(REPETIDO, METADATA);
+        else if(esOperacion(DUMP, comando.operaciones[i]))
+            !seRepite(&comando, DUMP_OK)
+                ? comando.status[DUMP_OK] = resultado(dumpHex(imagenOriginal), DUMP)
+                : resultado(REPETIDO, DUMP);
+        else if(esOperacion(COMODIN, comando.operaciones[i]))
+            !seRepite(&comando, COMODIN_OK)
+                ? comando.status[COMODIN_OK] = resultado(comodin(imagenOriginal), COMODIN)
+                : resultado(REPETIDO, COMODIN);
         else
-            printf("operacion %s desconocido\n", operaciones[i]);
+            printf("operacion %s desconocido\n", comando.operaciones[i]);
     }
     fclose(imagenOriginal);
-    return TODO_OK;
+    return TODO_BIEN;
 }

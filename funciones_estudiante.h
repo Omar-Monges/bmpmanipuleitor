@@ -5,6 +5,7 @@
 #define PREPARAR_ARCHIVO_SALIDA(pathOut) FILE *imagenOut = fopen((pathOut), "wb")
 #define true 1
 #define false 0
+#define CANT_COMANDOS 13
 
 //operaciones
 #define NEGATIVO "--negativo"
@@ -22,18 +23,24 @@
 #define METADATA "--metadata"
 
 //Codigos de resultados
-/*
-#define TODO_OK 0
-#define ARCHIVO_NO_ENCONTRADO 10
-#define NO_SE_PUEDE_CREAR_ARCHIVO 20
-*/
-#define ESCALA_DE_GRISES_OK 30
-#define TONALIDAD_OK 40
-#define RECORTAR_OK 50
-#define ROTAR_OK 60
-#define CONTRASTE_OK 70
-#define NEGATIVO_OK 80
-#define COMODIN_OK 90
+#define TODO_BIEN 100
+#define NO_ENCONTRE_ARCHIVO 110
+#define NO_PUDE_CREAR_ARCHIVO 120
+#define REPETIDO 137
+
+#define NEGATIVO_OK 0
+#define ESCALA_DE_GRISES_OK 1
+#define AUMENTAR_CONTRASTE_OK 2
+#define REDUCIR_CONTRASTE_OK 3
+#define TONALIDAD_AZUL_OK 4
+#define TONALIDAD_VERDE_OK 5
+#define TONALIDAD_ROJA_OK 6
+#define RECORTAR_OK 7
+#define ROTAR_DERECHA_OK 8
+#define ROTAR_IZQUIERDA_OK 9
+#define COMODIN_OK 10
+#define DUMP_OK 11
+#define METADATA_OK 12
 
 int solucion(int argc, char* argv[]);
 
@@ -52,6 +59,13 @@ typedef struct
     unsigned int alto;
     unsigned short profundida;
 } t_metadata;
+typedef struct
+{
+    unsigned int status[CANT_COMANDOS];
+    char *operaciones[50];
+    unsigned int numOperaciones;
+    char *nombreImagen;
+} t_parametros;
 
 /*
 typedef struct
@@ -68,7 +82,7 @@ typedef struct
 } t_statusOperation;
 */
 
-void dumpHex(FILE *archivo);
+int dumpHex(FILE *archivo);
 void extraerMetadata(FILE *archivo, t_metadata *dataP);
 
 int escalaDeGrises(FILE *imagenIn);
