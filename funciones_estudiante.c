@@ -71,56 +71,56 @@ int solucion(int argc, char* argv[])
     {
         if(esOperacion(ESCALA_DE_GRISES, comando.operaciones[i]))
             !seRepite(&comando, ESCALA_DE_GRISES_OK)
-            ? comando.status[ESCALA_DE_GRISES_OK] = resultado(escalaDeGrises(imagenOriginal), ESCALA_DE_GRISES)
-                                                    : resultado(REPETIDO, ESCALA_DE_GRISES);
+                ? comando.status[ESCALA_DE_GRISES_OK] = resultado(escalaDeGrises(imagenOriginal), ESCALA_DE_GRISES)
+                : resultado(REPETIDO, ESCALA_DE_GRISES);
         else if(esOperacion(TONALIDAD_ROJA, comando.operaciones[i]))
             !seRepite(&comando, TONALIDAD_ROJA_OK)
-            ? comando.status[TONALIDAD_ROJA_OK] = resultado(tonalidadRoja(imagenOriginal), TONALIDAD_ROJA)
-                                                  : resultado(REPETIDO, TONALIDAD_ROJA);
+                ? comando.status[TONALIDAD_ROJA_OK] = resultado(tonalidadRoja(imagenOriginal), TONALIDAD_ROJA)
+                : resultado(REPETIDO, TONALIDAD_ROJA);
         else if(esOperacion(TONALIDAD_VERDE, comando.operaciones[i]))
             !seRepite(&comando, TONALIDAD_VERDE_OK)
-            ? comando.status[TONALIDAD_VERDE_OK] = resultado(tonalidadVerde(imagenOriginal), TONALIDAD_VERDE)
-                                                   : resultado(REPETIDO, TONALIDAD_VERDE);
+                ? comando.status[TONALIDAD_VERDE_OK] = resultado(tonalidadVerde(imagenOriginal), TONALIDAD_VERDE)
+                : resultado(REPETIDO, TONALIDAD_VERDE);
         else if(esOperacion(TONALIDAD_AZUL, comando.operaciones[i]))
             !seRepite(&comando, TONALIDAD_AZUL_OK)
-            ? comando.status[TONALIDAD_AZUL_OK] = resultado(tonalidadAzul(imagenOriginal), TONALIDAD_AZUL)
-                                                  : resultado(REPETIDO, TONALIDAD_AZUL);
+                ? comando.status[TONALIDAD_AZUL_OK] = resultado(tonalidadAzul(imagenOriginal), TONALIDAD_AZUL)
+                : resultado(REPETIDO, TONALIDAD_AZUL);
         else if(esOperacion(AUMENTAR_CONTRASTE, comando.operaciones[i]))
             !seRepite(&comando, AUMENTAR_CONTRASTE_OK)
-            ? comando.status[AUMENTAR_CONTRASTE_OK] = resultado(aumentarContraste(imagenOriginal), AUMENTAR_CONTRASTE)
-                    : resultado(REPETIDO, AUMENTAR_CONTRASTE);
+                ? comando.status[AUMENTAR_CONTRASTE_OK] = resultado(aumentarContraste(imagenOriginal), AUMENTAR_CONTRASTE)
+                : resultado(REPETIDO, AUMENTAR_CONTRASTE);
         else if(esOperacion(REDUCIR_CONTRASTE, comando.operaciones[i]))
             !seRepite(&comando, REDUCIR_CONTRASTE_OK)
-            ? comando.status[REDUCIR_CONTRASTE_OK] = resultado(reducirContraste(imagenOriginal), REDUCIR_CONTRASTE)
-                    : resultado(REPETIDO, REDUCIR_CONTRASTE);
+                ? comando.status[REDUCIR_CONTRASTE_OK] = resultado(reducirContraste(imagenOriginal), REDUCIR_CONTRASTE)
+                : resultado(REPETIDO, REDUCIR_CONTRASTE);
         else if(esOperacion(RECORTAR, comando.operaciones[i]))
             !seRepite(&comando, RECORTAR_OK)
-            ? comando.status[RECORTAR_OK] = resultado(recortar(imagenOriginal), RECORTAR)
-                                            : resultado(REPETIDO, RECORTAR);
+                ? comando.status[RECORTAR_OK] = resultado(recortar(imagenOriginal), RECORTAR)
+                : resultado(REPETIDO, RECORTAR);
         else if(esOperacion(ROTAR_IZQUIERDA, comando.operaciones[i]))
             !seRepite(&comando, ROTAR_IZQUIERDA_OK)
-            ? comando.status[ROTAR_IZQUIERDA_OK] = resultado(rotarIzquierda(imagenOriginal), ROTAR_IZQUIERDA)
-                                                   : resultado(REPETIDO, ROTAR_IZQUIERDA);
+                ? comando.status[ROTAR_IZQUIERDA_OK] = resultado(rotarIzquierda(imagenOriginal), ROTAR_IZQUIERDA)
+                : resultado(REPETIDO, ROTAR_IZQUIERDA);
         else if(esOperacion(ROTAR_DERECHA, comando.operaciones[i]))
             !seRepite(&comando, ROTAR_DERECHA_OK)
-            ? comando.status[ROTAR_DERECHA_OK] = resultado(rotarDerecha(imagenOriginal), ROTAR_DERECHA)
-                                                 : resultado(REPETIDO, ROTAR_DERECHA);
+                ? comando.status[ROTAR_DERECHA_OK] = resultado(rotarDerecha(imagenOriginal), ROTAR_DERECHA)
+                : resultado(REPETIDO, ROTAR_DERECHA);
         else if(esOperacion(NEGATIVO, comando.operaciones[i]))
             !seRepite(&comando, NEGATIVO_OK)
-            ? comando.status[NEGATIVO_OK] = resultado(negativo(imagenOriginal), NEGATIVO)
-                                            : resultado(REPETIDO, NEGATIVO);
+                ? comando.status[NEGATIVO_OK] = resultado(negativo(imagenOriginal), NEGATIVO)
+                : resultado(REPETIDO, NEGATIVO);
         else if(esOperacion(METADATA, comando.operaciones[i]))
             !seRepite(&comando, METADATA_OK)
-            ? comando.status[METADATA_OK] = resultado(mostrarMetadata(imagenOriginal), METADATA)
-                                            : resultado(REPETIDO, METADATA);
+                ? comando.status[METADATA_OK] = resultado(mostrarMetadata(imagenOriginal), METADATA)
+                : resultado(REPETIDO, METADATA);
         else if(esOperacion(DUMP, comando.operaciones[i]))
             !seRepite(&comando, DUMP_OK)
-            ? comando.status[DUMP_OK] = resultado(dumpHex(imagenOriginal), DUMP)
-                                        : resultado(REPETIDO, DUMP);
+                ? comando.status[DUMP_OK] = resultado(dumpHex(imagenOriginal), DUMP)
+                : resultado(REPETIDO, DUMP);
         else if(esOperacion(COMODIN, comando.operaciones[i]))
             !seRepite(&comando, COMODIN_OK)
-            ? comando.status[COMODIN_OK] = resultado(comodin(imagenOriginal), COMODIN)
-                                           : resultado(REPETIDO, COMODIN);
+                ? comando.status[COMODIN_OK] = resultado(comodin(imagenOriginal), COMODIN)
+                : resultado(REPETIDO, COMODIN);
         else
             printf("operacion %s desconocido\n", comando.operaciones[i]);
     }
@@ -347,7 +347,7 @@ int tonalidadRoja(FILE *imagenIn)
 int aumentarContraste(FILE *imagenIn)
 {
     //Declaracion de variables
-    float factorAumento;
+    float factor;
     unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
     t_metadata cabecera;
     t_pixel pixel;
@@ -370,17 +370,17 @@ int aumentarContraste(FILE *imagenIn)
             //Si el promedio es mayor a 127 aumentamos sino reducimos
             if(promedio > 127)
             {
-                factorAumento = 1.25;
-                nuevoRojo = pixel.red * factorAumento;
-                nuevoVerde = pixel.green * factorAumento;
-                nuevoAzul = pixel.blue * factorAumento;
+                factor = 1.25;
+                nuevoRojo = pixel.red * factor;
+                nuevoVerde = pixel.green * factor;
+                nuevoAzul = pixel.blue * factor;
             }
             else
             {
-                factorAumento = 0.85;
-                nuevoRojo = pixel.red * factorAumento;
-                nuevoVerde = pixel.green * factorAumento;
-                nuevoAzul = pixel.blue * factorAumento;
+                factor = 0.75;
+                nuevoRojo = pixel.red * factor;
+                nuevoVerde = pixel.green * factor;
+                nuevoAzul = pixel.blue * factor;
             }
             pixel.red = (nuevoRojo > 255) ? 255 : nuevoRojo;
             pixel.green = (nuevoVerde > 255) ? 255 : nuevoVerde;
@@ -398,7 +398,7 @@ int aumentarContraste(FILE *imagenIn)
 int reducirContraste(FILE *imagenIn)
 {
     //Declaracion de variables
-    float factorAumento;
+    float factor;
     unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
     t_metadata cabecera;
     t_pixel pixel;
@@ -423,17 +423,17 @@ int reducirContraste(FILE *imagenIn)
             //Si el promedio es mayor a 127 reducimos sino aumentamos
             if(promedio > 127)
             {
-                factorAumento = 0.85;
-                nuevoRojo = pixel.red * factorAumento;
-                nuevoVerde = pixel.green * factorAumento;
-                nuevoAzul = pixel.blue * factorAumento;
+                factor = 0.75;
+                nuevoRojo = pixel.red * factor;
+                nuevoVerde = pixel.green * factor;
+                nuevoAzul = pixel.blue * factor;
             }
             else
             {
-                factorAumento = 1.25;
-                nuevoRojo = pixel.red * factorAumento;
-                nuevoVerde = pixel.green * factorAumento;
-                nuevoAzul = pixel.blue * factorAumento;
+                factor = 1.25;
+                nuevoRojo = pixel.red * factor;
+                nuevoVerde = pixel.green * factor;
+                nuevoAzul = pixel.blue * factor;
             }
             pixel.red = (nuevoRojo > 255) ? 255 : nuevoRojo;
             pixel.green = (nuevoVerde > 255) ? 255 : nuevoVerde;
