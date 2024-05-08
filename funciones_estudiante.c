@@ -128,6 +128,70 @@ int solucion(int argc, char* argv[])
     return TODO_BIEN;
 }
 
+int esOperacion(const char *operacionValida, const char *operacion)
+{
+    if(strcmp(operacionValida, operacion) == 0)
+        return true;
+    return false;
+}
+int seRepite(const t_parametros *param, const int operacion)
+{
+    if(param->status[operacion] != false)
+        return true;
+    return false;
+}
+void initComandos(t_parametros *comandos, const int cantOperacionesValidas)
+{
+    int i;
+    comandos->numOperaciones = 0;
+    for(i = 0; i < cantOperacionesValidas; i++)
+        comandos->status[i] = false;
+}
+int comoUsar()
+{
+    int i;
+    printf("Modo de empleo: bmpmanipuleitor [OPERACION] [IMAGEN]\n");
+    printf("Operaciones validas:\n");
+    for(i = 0; i < CANT_COMANDOS; i++)
+        printf(" %s\n", operacionesValidas[i]);
+    return TODO_BIEN;
+}
+int esArchivoBmp(FILE *img)
+{
+    char tipo[2];
+    fseek(img, 0, SEEK_SET);
+    fread(tipo, 2, 1, img);
+    return tipo[0] == 'B' && tipo[1] == 'M';
+}
+int minmax(int valor, int minimo, int maximo)
+{
+    if(valor < minimo)
+        return minimo;
+    else if(valor > maximo)
+        return maximo;
+    else
+        return valor;
+}
+
+void extraerMetadata(FILE *archivo, t_metadata *dataP)
+{
+    fseek(archivo, 2, SEEK_SET);
+    fread(&dataP->tamArchivo, 4, 1, archivo);
+
+    fseek(archivo, 10, SEEK_SET);
+    fread(&dataP->comienzoImagen, 4, 1, archivo);
+    fread(&dataP->tamEncabezado, 4, 1, archivo);
+
+    fseek(archivo, 18, SEEK_SET);
+    fread(&dataP->ancho, 4, 1, archivo);
+    fread(&dataP->alto, 4, 1, archivo);
+
+    fseek(archivo, 28, SEEK_SET);
+    fread(&dataP->profundida, 2, 1, archivo);
+    rewind(archivo);
+}
+
+//----------------Manipulaciones-----------
 
 int dumpHex(FILE *archivo)
 {
@@ -149,23 +213,6 @@ void copiandoCabecera(FILE *in, FILE *out, unsigned int comienzoImagen)
     fwrite(&buffer, comienzoImagen, 1, out);
 }
 
-void extraerMetadata(FILE *archivo, t_metadata *dataP)
-{
-    fseek(archivo, 2, SEEK_SET);
-    fread(&dataP->tamArchivo, 4, 1, archivo);
-
-    fseek(archivo, 10, SEEK_SET);
-    fread(&dataP->comienzoImagen, 4, 1, archivo);
-    fread(&dataP->tamEncabezado, 4, 1, archivo);
-
-    fseek(archivo, 18, SEEK_SET);
-    fread(&dataP->ancho, 4, 1, archivo);
-    fread(&dataP->alto, 4, 1, archivo);
-
-    fseek(archivo, 28, SEEK_SET);
-    fread(&dataP->profundida, 2, 1, archivo);
-    rewind(archivo);
-}
 int negativo(FILE *imagenIn)
 {
     //Declaracion de variables
@@ -241,7 +288,7 @@ int tonalidadAzul(FILE *imagenIn)
 {
     //Declaracion de variables
     unsigned int x, y;
-    unsigned char aumetaBlue;
+    unsigned char aumeta;
     t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_tonalidad-azul.bmp");
@@ -260,9 +307,9 @@ int tonalidadAzul(FILE *imagenIn)
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //Aumenta al 50% el azul
-            aumetaBlue = pixel.blue > 170 ? 255 : pixel.blue * 1.5;
+            aumeta = minmax(pixel.blue * 1.5, 0, 255);
             //modifico los valores para la imagen de salida
-            pixel.blue = aumetaBlue;
+            pixel.blue = aumeta;
             //escribo los bytes en la imagen de salida
             fwrite(&pixel, sizeof(pixel), 1, imagenOut);
         }
@@ -295,7 +342,7 @@ int tonalidadVerde(FILE *imagenIn)
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //Aumenta al 50% el azul
-            aumeta = pixel.green > 170 ? 255 : pixel.green * 1.5;
+            aumeta = minmax(pixel.green * 1.5, 0, 255);
             //modifico los valores para la imagen de salida
             pixel.green = aumeta;
             //escribo los bytes en la imagen de salida
@@ -331,7 +378,7 @@ int tonalidadRoja(FILE *imagenIn)
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //Aumenta
-            aumeta = pixel.red > 170 ? 255 : pixel.red * 1.5;
+            aumeta = minmax(pixel.red * 1.5, 0, 255);
             //modifico los valores para la imagen de salida
             pixel.red = aumeta;
             //escribo los bytes en la imagen de salida
@@ -343,12 +390,10 @@ int tonalidadRoja(FILE *imagenIn)
     return TONALIDAD_ROJA_OK;
 }
 
-
 int aumentarContraste(FILE *imagenIn)
 {
     //Declaracion de variables
-    float factor;
-    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
+    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, condicion, x, y;
     t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_aumentar-contraste.bmp");
@@ -366,25 +411,28 @@ int aumentarContraste(FILE *imagenIn)
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //calcular promedio
-            promedio = (pixel.red + pixel.green + pixel.blue) / 3;
-            //Si el promedio es mayor a 127 aumentamos sino reducimos
-            if(promedio > 127)
+            condicion = (pixel.red + pixel.green + pixel.blue) / 3 > 127;
+            //Si el promedio es mayor a 127 reducimos sino aumentamos
+            if(condicion)
             {
-                factor = 1.25;
-                nuevoRojo = pixel.red * factor;
-                nuevoVerde = pixel.green * factor;
-                nuevoAzul = pixel.blue * factor;
+                nuevoRojo = pixel.red + (pixel.red >> 2);
+                nuevoVerde = pixel.green + (pixel.green >> 2);
+                nuevoAzul = pixel.blue + (pixel.blue >> 2);
+
+                pixel.red = minmax(nuevoRojo, 127, 255);
+                pixel.green = minmax(nuevoVerde, 127, 255);
+                pixel.blue = minmax(nuevoAzul, 127, 255);
             }
             else
             {
-                factor = 0.75;
-                nuevoRojo = pixel.red * factor;
-                nuevoVerde = pixel.green * factor;
-                nuevoAzul = pixel.blue * factor;
+                nuevoRojo = pixel.red - (pixel.red >> 2);
+                nuevoVerde = pixel.green - (pixel.green >> 2);
+                nuevoAzul = pixel.blue - (pixel.blue >> 2);
+
+                pixel.red = minmax(nuevoRojo, 0, 127);
+                pixel.green = minmax(nuevoVerde, 0, 127);
+                pixel.blue = minmax(nuevoAzul, 0, 127);
             }
-            pixel.red = (nuevoRojo > 255) ? 255 : nuevoRojo;
-            pixel.green = (nuevoVerde > 255) ? 255 : nuevoVerde;
-            pixel.blue = (nuevoAzul > 255) ? 255 : nuevoAzul;
             //escribo los bytes en la imagen de salida
             fwrite(&pixel, sizeof(pixel), 1, imagenOut);
         }
@@ -394,12 +442,10 @@ int aumentarContraste(FILE *imagenIn)
     return AUMENTAR_CONTRASTE_OK;
 }
 
-
 int reducirContraste(FILE *imagenIn)
 {
     //Declaracion de variables
-    float factor;
-    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, promedio, x, y;
+    unsigned int nuevoRojo, nuevoVerde, nuevoAzul, condicion, x, y;
     t_metadata cabecera;
     t_pixel pixel;
     PREPARAR_ARCHIVO_SALIDA("estudiante_reducir-contraste.bmp");
@@ -418,26 +464,28 @@ int reducirContraste(FILE *imagenIn)
             //leer el pixel de la imagen de entrada
             fread(&pixel, sizeof(pixel), 1, imagenIn);
             //calcular promedio
-            promedio = (pixel.red + pixel.green + pixel.blue) / 3;
-
+            condicion = (pixel.red + pixel.green + pixel.blue) / 3 > 127;
             //Si el promedio es mayor a 127 reducimos sino aumentamos
-            if(promedio > 127)
+            if(!condicion)
             {
-                factor = 0.75;
-                nuevoRojo = pixel.red * factor;
-                nuevoVerde = pixel.green * factor;
-                nuevoAzul = pixel.blue * factor;
+                nuevoRojo = pixel.red + (pixel.red >> 2);
+                nuevoVerde = pixel.green + (pixel.green >> 2);
+                nuevoAzul = pixel.blue + (pixel.blue >> 2);
+
+                pixel.red = minmax(nuevoRojo, 0, 127);
+                pixel.green = minmax(nuevoVerde, 0, 127);
+                pixel.blue = minmax(nuevoAzul, 0, 127);
             }
             else
             {
-                factor = 1.25;
-                nuevoRojo = pixel.red * factor;
-                nuevoVerde = pixel.green * factor;
-                nuevoAzul = pixel.blue * factor;
+                nuevoRojo = pixel.red - (pixel.red >> 2);
+                nuevoVerde = pixel.green - (pixel.green >> 2);
+                nuevoAzul = pixel.blue - (pixel.blue >> 2);
+
+                pixel.red = minmax(nuevoRojo, 127, 255);
+                pixel.green = minmax(nuevoVerde, 127, 255);
+                pixel.blue = minmax(nuevoAzul, 127, 255);
             }
-            pixel.red = (nuevoRojo > 255) ? 255 : nuevoRojo;
-            pixel.green = (nuevoVerde > 255) ? 255 : nuevoVerde;
-            pixel.blue = (nuevoAzul > 255) ? 255 : nuevoAzul;
             //escribir en imagenOut
             fwrite(&pixel, sizeof(pixel), 1, imagenOut);
         }
@@ -702,39 +750,4 @@ int resultado(const int res, const char comando[])
         printf("No se que codigo de error es XD\n");
     }
     return true;
-}
-int esOperacion(const char *operacionValida, const char *operacion)
-{
-    if(strcmp(operacionValida, operacion) == 0)
-        return true;
-    return false;
-}
-int seRepite(const t_parametros *param, const int operacion)
-{
-    if(param->status[operacion] != false)
-        return true;
-    return false;
-}
-void initComandos(t_parametros *comandos, const int cantOperacionesValidas)
-{
-    int i;
-    comandos->numOperaciones = 0;
-    for(i = 0; i < cantOperacionesValidas; i++)
-        comandos->status[i] = false;
-}
-int comoUsar()
-{
-    int i;
-    printf("Modo de empleo: bmpmanipuleitor [OPERACION] [IMAGEN]\n");
-    printf("Operaciones validas:\n");
-    for(i = 0; i < CANT_COMANDOS; i++)
-        printf(" %s\n", operacionesValidas[i]);
-    return TODO_BIEN;
-}
-int esArchivoBmp(FILE *img)
-{
-    char tipo[2];
-    fseek(img, 0, SEEK_SET);
-    fread(tipo, 2, 1, img);
-    return tipo[0] == 'B' && tipo[1] == 'M';
 }

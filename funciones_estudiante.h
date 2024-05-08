@@ -68,9 +68,15 @@ typedef struct
     char *nombreImagen;
 } t_parametros;
 
-int dumpHex(FILE *archivo);
+int esOperacion(const char *operacionValida, const char *operacion);
+int seRepite(const t_parametros *param, const int operacion);
+void initComandos(t_parametros *comandos, const int cantOperacionesValidas);
+int comoUsar();
+int esArchivoBmp(FILE *img);
+int minmax(int valor, int minimo, int maximo);
 void extraerMetadata(FILE *archivo, t_metadata *dataP);
 
+int dumpHex(FILE *archivo);
 int negativo(FILE *imagenIn);
 int escalaDeGrises(FILE *imagenIn);
 int tonalidadAzul(FILE *imagenIn);
@@ -84,12 +90,5 @@ int rotarDerecha(FILE *imagenIn);
 int comodin(FILE *imagenIn);
 int mostrarMetadata(FILE *archivo);
 int resultado(const int res, const char comando[]);
-
-
-int esOperacion(const char *operacionValida, const char *operacion);
-int seRepite(const t_parametros *param, const int operacion);
-void initComandos(t_parametros *comandos, const int cantOperacionesValidas);
-int comoUsar();
-int esArchivoBmp(FILE *img);
 
 #endif // FUNCIONES_ESTUDIANTE_H_INCLUDED
