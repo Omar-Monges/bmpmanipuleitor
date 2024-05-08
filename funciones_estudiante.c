@@ -27,6 +27,107 @@
 #include "constantes.h"
 #include "funciones_estudiante.h"
 
+const char *operacionesValidas[CANT_COMANDOS] =
+{
+    NEGATIVO,
+    ESCALA_DE_GRISES,
+    TONALIDAD_AZUL,
+    TONALIDAD_VERDE,
+    TONALIDAD_ROJA,
+    AUMENTAR_CONTRASTE,
+    REDUCIR_CONTRASTE,
+    RECORTAR,
+    ROTAR_DERECHA,
+    ROTAR_IZQUIERDA,
+    COMODIN,
+    DUMP,
+    METADATA
+};
+
+int solucion(int argc, char* argv[])
+{
+    int i;
+    t_parametros comando;
+    FILE *imagenOriginal;
+    initComandos(&comando, CANT_COMANDOS);
+    if(argc < 3)
+    {
+        return comoUsar();
+    }
+    for(i = 1; i < argc; i++)
+    {
+        if(strncmp(argv[i], "--", 2) == 0)
+        {
+            comando.operaciones[comando.numOperaciones] = argv[i];
+            comando.numOperaciones++;
+        }
+        else
+            comando.nombreImagen = argv[i];
+    }
+    imagenOriginal = fopen(comando.nombreImagen, "rb");
+    if (imagenOriginal == NULL) return resultado(NO_ENCONTRE_ARCHIVO, comando.nombreImagen);
+    if (!esArchivoBmp(imagenOriginal)) return resultado(NO_ES_ARCHIVO_BMP, comando.nombreImagen);
+    for(i = 0; i < comando.numOperaciones; i++)
+    {
+        if(esOperacion(ESCALA_DE_GRISES, comando.operaciones[i]))
+            !seRepite(&comando, ESCALA_DE_GRISES_OK)
+            ? comando.status[ESCALA_DE_GRISES_OK] = resultado(escalaDeGrises(imagenOriginal), ESCALA_DE_GRISES)
+                                                    : resultado(REPETIDO, ESCALA_DE_GRISES);
+        else if(esOperacion(TONALIDAD_ROJA, comando.operaciones[i]))
+            !seRepite(&comando, TONALIDAD_ROJA_OK)
+            ? comando.status[TONALIDAD_ROJA_OK] = resultado(tonalidadRoja(imagenOriginal), TONALIDAD_ROJA)
+                                                  : resultado(REPETIDO, TONALIDAD_ROJA);
+        else if(esOperacion(TONALIDAD_VERDE, comando.operaciones[i]))
+            !seRepite(&comando, TONALIDAD_VERDE_OK)
+            ? comando.status[TONALIDAD_VERDE_OK] = resultado(tonalidadVerde(imagenOriginal), TONALIDAD_VERDE)
+                                                   : resultado(REPETIDO, TONALIDAD_VERDE);
+        else if(esOperacion(TONALIDAD_AZUL, comando.operaciones[i]))
+            !seRepite(&comando, TONALIDAD_AZUL_OK)
+            ? comando.status[TONALIDAD_AZUL_OK] = resultado(tonalidadAzul(imagenOriginal), TONALIDAD_AZUL)
+                                                  : resultado(REPETIDO, TONALIDAD_AZUL);
+        else if(esOperacion(AUMENTAR_CONTRASTE, comando.operaciones[i]))
+            !seRepite(&comando, AUMENTAR_CONTRASTE_OK)
+            ? comando.status[AUMENTAR_CONTRASTE_OK] = resultado(aumentarContraste(imagenOriginal), AUMENTAR_CONTRASTE)
+                    : resultado(REPETIDO, AUMENTAR_CONTRASTE);
+        else if(esOperacion(REDUCIR_CONTRASTE, comando.operaciones[i]))
+            !seRepite(&comando, REDUCIR_CONTRASTE_OK)
+            ? comando.status[REDUCIR_CONTRASTE_OK] = resultado(reducirContraste(imagenOriginal), REDUCIR_CONTRASTE)
+                    : resultado(REPETIDO, REDUCIR_CONTRASTE);
+        else if(esOperacion(RECORTAR, comando.operaciones[i]))
+            !seRepite(&comando, RECORTAR_OK)
+            ? comando.status[RECORTAR_OK] = resultado(recortar(imagenOriginal), RECORTAR)
+                                            : resultado(REPETIDO, RECORTAR);
+        else if(esOperacion(ROTAR_IZQUIERDA, comando.operaciones[i]))
+            !seRepite(&comando, ROTAR_IZQUIERDA_OK)
+            ? comando.status[ROTAR_IZQUIERDA_OK] = resultado(rotarIzquierda(imagenOriginal), ROTAR_IZQUIERDA)
+                                                   : resultado(REPETIDO, ROTAR_IZQUIERDA);
+        else if(esOperacion(ROTAR_DERECHA, comando.operaciones[i]))
+            !seRepite(&comando, ROTAR_DERECHA_OK)
+            ? comando.status[ROTAR_DERECHA_OK] = resultado(rotarDerecha(imagenOriginal), ROTAR_DERECHA)
+                                                 : resultado(REPETIDO, ROTAR_DERECHA);
+        else if(esOperacion(NEGATIVO, comando.operaciones[i]))
+            !seRepite(&comando, NEGATIVO_OK)
+            ? comando.status[NEGATIVO_OK] = resultado(negativo(imagenOriginal), NEGATIVO)
+                                            : resultado(REPETIDO, NEGATIVO);
+        else if(esOperacion(METADATA, comando.operaciones[i]))
+            !seRepite(&comando, METADATA_OK)
+            ? comando.status[METADATA_OK] = resultado(mostrarMetadata(imagenOriginal), METADATA)
+                                            : resultado(REPETIDO, METADATA);
+        else if(esOperacion(DUMP, comando.operaciones[i]))
+            !seRepite(&comando, DUMP_OK)
+            ? comando.status[DUMP_OK] = resultado(dumpHex(imagenOriginal), DUMP)
+                                        : resultado(REPETIDO, DUMP);
+        else if(esOperacion(COMODIN, comando.operaciones[i]))
+            !seRepite(&comando, COMODIN_OK)
+            ? comando.status[COMODIN_OK] = resultado(comodin(imagenOriginal), COMODIN)
+                                           : resultado(REPETIDO, COMODIN);
+        else
+            printf("operacion %s desconocido\n", comando.operaciones[i]);
+    }
+    fclose(imagenOriginal);
+    return TODO_BIEN;
+}
+
 
 int dumpHex(FILE *archivo)
 {
@@ -42,14 +143,10 @@ int dumpHex(FILE *archivo)
 
 void copiandoCabecera(FILE *in, FILE *out, unsigned int comienzoImagen)
 {
-    int i;
-    unsigned char byte;
+    unsigned char buffer[comienzoImagen];
     //copiando data hasta comienzo de la imagen
-    for(i = 0; i < comienzoImagen; i++)
-    {
-        fread(&byte, sizeof(unsigned char), 1, in);
-        fwrite(&byte, sizeof(unsigned char), 1, out);
-    }
+    fread(&buffer, comienzoImagen, 1, in);
+    fwrite(&buffer, comienzoImagen, 1, out);
 }
 
 void extraerMetadata(FILE *archivo, t_metadata *dataP)
@@ -509,10 +606,10 @@ int comodin(FILE *imagenIn)
         fseek(imagenIn, sizeof(t_pixel) * (cabecera.ancho), SEEK_CUR);
         for(col = 0; col < cabecera.ancho; col++)
         {
-            fseek(imagenIn, -sizeof(t_pixel), SEEK_CUR);
+            fseek(imagenIn, -3, SEEK_CUR);
             fread(&pixel, sizeof(t_pixel), 1, imagenIn);
             fwrite(&pixel, sizeof(t_pixel), 1, imagenOut);
-            fseek(imagenIn, -sizeof(t_pixel), SEEK_CUR);
+            fseek(imagenIn, -3, SEEK_CUR);
         }
         fseek(imagenIn, sizeof(t_pixel) * (cabecera.ancho), SEEK_CUR);
     }
@@ -586,6 +683,9 @@ int resultado(const int res, const char comando[])
     case REDUCIR_CONTRASTE_OK:
         printf("Operacion %s completado.\n", comando);
         break;
+    case RECORTAR_OK:
+        printf("Operacion %s completado.\n", comando);
+        break;
     case COMODIN_OK:
         printf("Operacion %s completado.\n", comando);
         break;
@@ -594,6 +694,9 @@ int resultado(const int res, const char comando[])
         break;
     case METADATA_OK:
         printf("Operacion %s completado.\n", comando);
+        break;
+    case NO_ES_ARCHIVO_BMP:
+        printf("El archivo %s no es valido.\n", comando);
         break;
     default:
         printf("No se que codigo de error es XD\n");
@@ -619,88 +722,19 @@ void initComandos(t_parametros *comandos, const int cantOperacionesValidas)
     for(i = 0; i < cantOperacionesValidas; i++)
         comandos->status[i] = false;
 }
-
-
-int solucion(int argc, char* argv[])
+int comoUsar()
 {
-    int i; //*numOperaciones;
-    t_parametros comando;
-    FILE *imagenOriginal;
-    initComandos(&comando, CANT_COMANDOS);
-    if(argc < 3)
-    {
-        printf("Uso: %s <argumentos> entre las cuales esta la imagen\n", argv[0]);
-        return 0;
-    }
-    for(i = 1; i < argc; i++)
-    {
-        if(strncmp(argv[i], "--", 2) == 0)
-        {
-            comando.operaciones[comando.numOperaciones] = argv[i];
-            comando.numOperaciones++;
-        }
-        else
-            comando.nombreImagen = argv[i];
-    }
-    imagenOriginal = fopen(comando.nombreImagen, "rb");
-    if (imagenOriginal == NULL) return resultado(NO_ENCONTRE_ARCHIVO, comando.nombreImagen);
-    for(i = 0; i < comando.numOperaciones; i++)
-    {
-        if(esOperacion(ESCALA_DE_GRISES, comando.operaciones[i]))
-            !seRepite(&comando, ESCALA_DE_GRISES_OK)
-                ? comando.status[ESCALA_DE_GRISES_OK] = resultado(escalaDeGrises(imagenOriginal), ESCALA_DE_GRISES)
-                : resultado(REPETIDO, ESCALA_DE_GRISES);
-        else if(esOperacion(TONALIDAD_ROJA, comando.operaciones[i]))
-            !seRepite(&comando, TONALIDAD_ROJA_OK)
-                ? comando.status[TONALIDAD_ROJA_OK] = resultado(tonalidadRoja(imagenOriginal), TONALIDAD_ROJA)
-                : resultado(REPETIDO, TONALIDAD_ROJA);
-        else if(esOperacion(TONALIDAD_VERDE, comando.operaciones[i]))
-            !seRepite(&comando, TONALIDAD_VERDE_OK)
-                ? comando.status[TONALIDAD_VERDE_OK] = resultado(tonalidadVerde(imagenOriginal), TONALIDAD_VERDE)
-                : resultado(REPETIDO, TONALIDAD_VERDE);
-        else if(esOperacion(TONALIDAD_AZUL, comando.operaciones[i]))
-            !seRepite(&comando, TONALIDAD_AZUL_OK)
-                ? comando.status[TONALIDAD_AZUL_OK] = resultado(tonalidadAzul(imagenOriginal), TONALIDAD_AZUL)
-                : resultado(REPETIDO, TONALIDAD_AZUL);
-        else if(esOperacion(AUMENTAR_CONTRASTE, comando.operaciones[i]))
-            !seRepite(&comando, AUMENTAR_CONTRASTE_OK)
-                ? comando.status[AUMENTAR_CONTRASTE_OK] = resultado(aumentarContraste(imagenOriginal), AUMENTAR_CONTRASTE)
-                : resultado(REPETIDO, AUMENTAR_CONTRASTE);
-        else if(esOperacion(REDUCIR_CONTRASTE, comando.operaciones[i]))
-            !seRepite(&comando, REDUCIR_CONTRASTE_OK)
-                ? comando.status[REDUCIR_CONTRASTE_OK] = resultado(reducirContraste(imagenOriginal), REDUCIR_CONTRASTE)
-                : resultado(REPETIDO, REDUCIR_CONTRASTE);
-        else if(esOperacion(RECORTAR, comando.operaciones[i]))
-            !seRepite(&comando, RECORTAR_OK)
-                ? comando.status[RECORTAR_OK] = resultado(recortar(imagenOriginal), RECORTAR)
-                : resultado(REPETIDO, RECORTAR);
-        else if(esOperacion(ROTAR_IZQUIERDA, comando.operaciones[i]))
-            !seRepite(&comando, ROTAR_IZQUIERDA_OK)
-                ? comando.status[ROTAR_IZQUIERDA_OK] = resultado(rotarIzquierda(imagenOriginal), ROTAR_IZQUIERDA)
-                : resultado(REPETIDO, ROTAR_IZQUIERDA);
-        else if(esOperacion(ROTAR_DERECHA, comando.operaciones[i]))
-            !seRepite(&comando, ROTAR_DERECHA_OK)
-                ? comando.status[ROTAR_DERECHA_OK] = resultado(rotarDerecha(imagenOriginal), ROTAR_DERECHA)
-                : resultado(REPETIDO, ROTAR_DERECHA);
-        else if(esOperacion(NEGATIVO, comando.operaciones[i]))
-            !seRepite(&comando, NEGATIVO_OK)
-                ? comando.status[NEGATIVO_OK] = resultado(negativo(imagenOriginal), NEGATIVO)
-                : resultado(REPETIDO, NEGATIVO);
-        else if(esOperacion(METADATA, comando.operaciones[i]))
-            !seRepite(&comando, METADATA_OK)
-                ? comando.status[METADATA_OK] = resultado(mostrarMetadata(imagenOriginal), METADATA)
-                : resultado(REPETIDO, METADATA);
-        else if(esOperacion(DUMP, comando.operaciones[i]))
-            !seRepite(&comando, DUMP_OK)
-                ? comando.status[DUMP_OK] = resultado(dumpHex(imagenOriginal), DUMP)
-                : resultado(REPETIDO, DUMP);
-        else if(esOperacion(COMODIN, comando.operaciones[i]))
-            !seRepite(&comando, COMODIN_OK)
-                ? comando.status[COMODIN_OK] = resultado(comodin(imagenOriginal), COMODIN)
-                : resultado(REPETIDO, COMODIN);
-        else
-            printf("operacion %s desconocido\n", comando.operaciones[i]);
-    }
-    fclose(imagenOriginal);
+    int i;
+    printf("Modo de empleo: bmpmanipuleitor [OPERACION] [IMAGEN]\n");
+    printf("Operaciones validas:\n");
+    for(i = 0; i < CANT_COMANDOS; i++)
+        printf(" %s\n", operacionesValidas[i]);
     return TODO_BIEN;
+}
+int esArchivoBmp(FILE *img)
+{
+    char tipo[2];
+    fseek(img, 0, SEEK_SET);
+    fread(tipo, 2, 1, img);
+    return tipo[0] == 'B' && tipo[1] == 'M';
 }

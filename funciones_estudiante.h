@@ -26,7 +26,8 @@
 #define TODO_BIEN 100
 #define NO_ENCONTRE_ARCHIVO 110
 #define NO_PUDE_CREAR_ARCHIVO 120
-#define REPETIDO 137
+#define NO_ES_ARCHIVO_BMP 130
+#define REPETIDO 140
 
 #define NEGATIVO_OK 0
 #define ESCALA_DE_GRISES_OK 1
@@ -67,31 +68,28 @@ typedef struct
     char *nombreImagen;
 } t_parametros;
 
-/*
-typedef struct
-{
-    bool seCompletoEscalaDeGrises;
-    bool seCompletoTonalidadRoja;
-    bool seCompletoTonalidadVerde;
-    bool seCompletoTonalidadAzul;
-    bool seCompletoAumentarContraste;   //Implementacion para no repetir operaciones
-    bool seCompletoReducirContraste;
-    bool seCompletoRecortar;
-    bool seCompletoRotarDerecha;
-    bool seCompletoRotarIzquierda;
-} t_statusOperation;
-*/
-
 int dumpHex(FILE *archivo);
 void extraerMetadata(FILE *archivo, t_metadata *dataP);
 
+int negativo(FILE *imagenIn);
 int escalaDeGrises(FILE *imagenIn);
 int tonalidadAzul(FILE *imagenIn);
 int tonalidadVerde(FILE *imagenIn);
 int tonalidadRoja(FILE *imagenIn);
 int aumentarContraste(FILE *imagenIn);
 int reducirContraste(FILE *imagenIn);
-
 int recortar(FILE *imagenIn);
+int rotarIzquierda(FILE *imagenIn);
+int rotarDerecha(FILE *imagenIn);
+int comodin(FILE *imagenIn);
+int mostrarMetadata(FILE *archivo);
+int resultado(const int res, const char comando[]);
+
+
+int esOperacion(const char *operacionValida, const char *operacion);
+int seRepite(const t_parametros *param, const int operacion);
+void initComandos(t_parametros *comandos, const int cantOperacionesValidas);
+int comoUsar();
+int esArchivoBmp(FILE *img);
 
 #endif // FUNCIONES_ESTUDIANTE_H_INCLUDED
