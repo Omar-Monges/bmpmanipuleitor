@@ -666,19 +666,7 @@ int comodin(FILE *imagenIn)
 int mostrarMetadata(FILE *archivo)
 {
     t_metadata meta;
-    fseek(archivo, 2, SEEK_SET);
-    fread(&meta.tamArchivo, 4, 1, archivo);
-
-    fseek(archivo, 10, SEEK_SET);
-    fread(&meta.comienzoImagen, 4, 1, archivo);
-    fread(&meta.tamEncabezado, 4, 1, archivo);
-
-    fseek(archivo, 18, SEEK_SET);
-    fread(&meta.ancho, 4, 1, archivo);
-    fread(&meta.alto, 4, 1, archivo);
-
-    fseek(archivo, 28, SEEK_SET);
-    fread(&meta.profundida, 2, 1, archivo);
+    extraerMetadata(archivo, &meta);
 
     printf("tamanio de archivo: %d bytes\n", meta.tamArchivo);
     printf("comienzo de la imagen: %d bytes\n", meta.comienzoImagen);
